@@ -1,0 +1,356 @@
+
+:root {
+    --color-rojo: #D52B1E;
+    --color-azul: #0047AB;
+    --color-blanco: #FFFFFF;
+    --color-gris: #F4F4F4;
+    --color-gris-oscuro: #333333;
+    --sombra: 0 4px 6px rgba(0, 0, 0, 0.1);
+    --transicion: all 0.3s ease;
+}
+
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Oswald", sans-serif;
+    
+}
+
+body {
+
+  
+
+    background-color: var(--color-gris);
+    color: var(--color-gris-oscuro);
+    line-height: 1.6;
+}
+
+.contenedor {
+    width: 90%;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+/* Header y logo */
+header {
+    background: linear-gradient(to right, var(--color-rojo), var(--color-azul));
+    color: var(--color-blanco);
+    padding: 20px 0;
+    box-shadow: var(--sombra);
+}
+
+.header-contenido {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+}
+
+.logo i {
+    font-size: 2.5rem;
+    margin-right: 10px;
+}
+
+.logo h1 {
+    font-size: 2.2rem;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+/* Navegación */
+nav {
+    background-color: var(--color-blanco);
+    box-shadow: var(--sombra);
+}
+
+.navbar {
+    display: flex;
+    justify-content: center;
+    list-style: none;
+}
+
+.navbar li {
+    position: relative;
+}
+
+.navbar a {
+    display: block;
+    color: var(--color-gris-oscuro);
+    text-decoration: none;
+    padding: 15px 25px;
+    font-weight: 600;
+    transition: var(--transicion);
+}
+
+.navbar a:hover {
+    background-color: var(--color-rojo);
+    color: var(--color-blanco);
+}
+
+.navbar a i {
+    margin-right: 8px;
+}
+
+/* Sección Hero */
+.hero {
+    background: url('https://images.unsplash.com/photo-1596510913920-85d87a1800d2?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2000&q=80') no-repeat center center/cover;
+    height: 500px;
+    display: flex;
+    align-items: center;
+    text-align: center;
+    color: var(--color-blanco);
+    position: relative;
+}
+
+.hero::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+}
+
+.hero-contenido {
+    position: relative;
+    z-index: 1;
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    background-image: url('balon.png');
+}
+
+.hero-contenido h2 {
+    font-size: 3rem;
+    margin-bottom: 20px;
+    background-image: url('balon.png');
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.hero-contenido p {
+    font-size: 1.2rem;
+    margin-bottom: 30px;
+}
+
+.boton {
+    display: inline-block;
+    background-color: var(--color-rojo);
+    color: var(--color-blanco);
+    padding: 12px 30px;
+    text-decoration: none;
+    border-radius: 30px;
+    font-weight: bold;
+    text-transform: uppercase;
+    transition: var(--transicion);
+    margin: 0 10px;
+}
+
+.boton:hover {
+    background-color: var(--color-azul);
+    transform: translateY(-3px);
+}
+
+
+.caracteristicas {
+    padding: 60px 0;
+    background-color: var(--color-blanco);
+}
+
+.titulo-seccion {
+    text-align: center;
+    margin-bottom: 40px;
+    color: var(--color-azul);
+    position: relative;
+}
+
+.titulo-seccion::after {
+    content: '';
+    display: block;
+    width: 80px;
+    height: 4px;
+    background: var(--color-rojo);
+    margin: 15px auto;
+}
+
+.caracteristicas-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 30px;
+}
+
+.caracteristica {
+    text-align: center;
+    padding: 30px 20px;
+    border-radius: 10px;
+    box-shadow: var(--sombra);
+    transition: var(--transicion);
+}
+
+.caracteristica:hover {
+    transform: translateY(-10px);
+}
+
+.caracteristica i {
+    font-size: 3rem;
+    color: var(--color-azul);
+    margin-bottom: 20px;
+}
+
+.caracteristica h3 {
+    margin-bottom: 15px;
+    color: var(--color-rojo);
+}
+
+
+.formularios {
+    padding: 60px 0;
+    background: linear-gradient(to bottom, var(--color-azul), var(--color-rojo));
+    color: var(--color-blanco);
+}
+
+.formularios-contenedor {
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+    flex-wrap: wrap;
+}
+
+.formulario {
+    background-color: var(--color-blanco);
+    color: var(--color-gris-oscuro);
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: var(--sombra);
+    width: 100%;
+    max-width: 400px;
+}
+
+.formulario h3 {
+    text-align: center;
+    margin-bottom: 20px;
+    color: var(--color-azul);
+}
+
+.formulario input {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 15px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+.formulario button {
+    width: 100%;
+    padding: 12px;
+    background-color: var(--color-rojo);
+    color: var(--color-blanco);
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: var(--transicion);
+}
+
+.formulario button:hover {
+    background-color: var(--color-azul);
+}
+
+
+footer {
+    background-color: var(--color-gris-oscuro);
+    color: var(--color-blanco);
+    padding: 40px 0 20px;
+}
+
+.footer-contenido {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 30px;
+    margin-bottom: 30px;
+}
+
+.footer-seccion h4 {
+    color: var(--color-rojo);
+    margin-bottom: 20px;
+    font-size: 1.2rem;
+}
+
+.footer-seccion ul {
+    list-style: none;
+}
+
+.footer-seccion ul li {
+    margin-bottom: 10px;
+}
+
+.footer-seccion a {
+    color: var(--color-blanco);
+    text-decoration: none;
+    transition: var(--transicion);
+}
+
+.footer-seccion a:hover {
+    color: var(--color-rojo);
+}
+
+.redes-sociales {
+    display: flex;
+    gap: 15px;
+    margin-top: 15px;
+}
+
+.redes-sociales a {
+    display: inline-block;
+    width: 40px;
+    height: 40px;
+    background-color: var(--color-azul);
+    color: var(--color-blanco);
+    border-radius: 50%;
+    text-align: center;
+    line-height: 40px;
+    transition: var(--transicion);
+}
+
+.redes-sociales a:hover {
+    background-color: var(--color-rojo);
+    transform: translateY(-3px);
+}
+
+.copyright {
+    text-align: center;
+    padding-top: 20px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+
+@media (max-width: 768px) {
+    .header-contenido {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .logo {
+        margin-bottom: 15px;
+    }
+    
+    .navbar {
+        flex-direction: column;
+    }
+    
+    .hero-contenido h2 {
+        font-size: 2rem;
+    }
+    
+    .formularios-contenedor {
+        flex-direction: column;
+        align-items: center;
+    }
+}
