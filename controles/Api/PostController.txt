@@ -1,0 +1,133 @@
+<?php
+
+namespace controles\Api;
+
+use Core\App;
+
+class PostController
+{
+    public function index()
+    {
+        $db = App::resolve('Core\Database');
+        $userId = $_GET['user'] ?? null;
+
+        if ($userId) {
+            $posts = $db->query("SELECT * FROM publicaciones WHERE idUsuario = :id ORDER BY postdate DESC", [
+                'id' => $userId
+            ])->get();
+        } else {
+            $posts = $db->query("SELECT * FROM publicaciones ORDER BY postdate DESC")->get();
+        }
+
+        echo json_encode($posts);
+    }
+    public function store()
+    {
+        $db = App::resolve('Core\Database');
+        $contenido = $_POST['contenido'] ?? '';
+        $tipo = $_POST['tipo'] ?? null;
+        $idUsuario = $_SESSION['idUsuario'] ?? null;
+        $fecha = date('Y-m-d');
+        $archivoRuta = null;
+    
+        // Validar contenido
+        if (empty($contenido)) {
+            http_response_code(400);
+            echo json_encode(['error' => 'Contenido es obligatorio']);
+            return;
+        }
+    
+        // Validar tipo
+        if (!in_array($tipo, ['imagen', 'video'])) {
+            http_response_code(400);
+            echo json_encode(['error' => 'Tipo de archivo no permitido']);
+            return;
+        }
+    
+        // Validar sesión
+        if (!$idUsuario) {
+            http_response_code(401); // Unauthorized
+            echo json_encode(['error' => 'Usuario no autenticado']);
+            return;
+        }
+    
+        // Subida de archivos
+        if ($tipo === 'imagen' && isset($_FILES['imagen'])) {
+            $archivo = $_FILES['imagen'];
+    
+            // Validar tamaño máximo (5MB)
+            if ($archivo['size'] > 5 * 1024 * 1024) {
+                http_response_code(400);
+                echo json_encode(['error' => 'El archivo es demasiado grande']);
+                return;
+            }
+    
+            // Validar tipo de archivo
+            if (!in_array(mime_content_type($archivo['tmp_name']), ['image/jpeg', 'image/png'])) {
+                http_response_code(400);
+                echo json_encode(['error' => 'Tipo de archivo no permitido']);
+                return;
+            }
+    
+            if ($archivo['error'] === 0) {
+                $nombre = time() . '_' . $archivo['name'];
+                if (move_uploaded_file($archivo['tmp_name'], 'public/uploads/' . $nombre)) {
+                    $archivoRuta = 'public/uploads/' . $nombre;
+                } else {
+                    http_response_code(500);
+                    echo json_encode(['error' => 'Error al guardar el archivo']);
+                    return;
+                }
+            } else {
+                http_response_code(500);
+                echo json_encode(['error' => 'Error en la carga del archivo']);
+                return;
+            }
+        } elseif ($tipo === 'video' && isset($_FILES['video'])) {
+            $archivo = $_FILES['video'];
+    
+            // Validar tamaño máximo (50MB)
+            if ($archivo['size'] > 50 * 1024 * 1024) {
+                http_response_code(400);
+                echo json_encode(['error' => 'El archivo es demasiado grande']);
+                return;
+            }
+    
+            // Validar tipo de archivo (solo videos)
+            if (!in_array(mime_content_type($archivo['tmp_name']), ['video/mp4', 'video/avi'])) {
+                http_response_code(400);
+                echo json_encode(['error' => 'Tipo de archivo no permitido']);
+                return;
+            }
+    
+            if ($archivo['error'] === 0) {
+                $nombre = time() . '_' . $archivo['name'];
+                if (move_uploaded_file($archivo['tmp_name'], 'public/uploads/' . $nombre)) {
+                    $archivoRuta = 'public/uploads/' . $nombre;
+                } else {
+                    http_response_code(500);
+                    echo json_encode(['error' => 'Error al guardar el archivo']);
+                    return;
+                }
+            } else {
+                http_response_code(500);
+                echo json_encode(['error' => 'Error en la carga del archivo']);
+                return;
+            }
+        }
+    
+        // Insertar publicación
+        $db->query("INSERT INTO publicaciones (idUsuario, texto, tipo, archivo, postdate) 
+                    VALUES (:id, :texto, :tipo, :archivo, :fecha)", [
+            'id' => $idUsuario,
+            'texto' => htmlspecialchars($contenido, ENT_QUOTES, 'UTF-8'),  // Sanitización de contenido
+            'tipo' => $tipo,
+            'archivo' => $archivoRuta,
+            'fecha' => $fecha
+        ]);
+    
+        echo json_encode(['success' => true]);
+    }
+    
+    
+}

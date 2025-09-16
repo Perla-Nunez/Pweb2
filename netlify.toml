@@ -1,0 +1,6 @@
+[build]
+  publish = "public"  # Carpeta donde se generará el sitio estático
+  command = "php -d variables_order=EGPCS vendor/bin/php-cs-fixer run"  # Este comando se puede ajustar según tu proyecto
+
+[[plugins]]
+package = "netlify-plugin-php"
