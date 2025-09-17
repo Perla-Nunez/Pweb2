@@ -6,8 +6,8 @@
   <title>MundialFan - Todo sobre el Mundial de Fútbol</title>
 
   <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@200..700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="styles.css">
-
+  <link rel="stylesheet" href="styles.css">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
  
 
@@ -241,7 +241,7 @@
     </div>
   </header>
 
-  <!-- NAV -->
+  <!-- NAVBAR -->
   <nav>
     <div class="contenedor nav-wrap">
       <ul class="navbar">
@@ -298,24 +298,70 @@
   </section>
 
   <section class="formularios">
+    <!--Inicio de sesion-->
     <div class="contenedor">
       <h2 class="titulo-seccion">Únete a la Comunidad</h2>
       <div class="formularios-contenedor">
         <div class="formulario">
           <h3><i class="fas fa-sign-in-alt"></i> Iniciar Sesión</h3>
-          <form id="login-form">
-            <input type="email" placeholder="Correo electrónico" required>
-            <input type="password" placeholder="Contraseña" required>
+          <form id="login-form" name="inicioDeSesion" action="inicioSesion.php" method="POST">
+            <input type="email" id="correo" name="correo" placeholder="Correo electrónico" required>
+            <input type="password" id="contrasena" name="contrasena" placeholder="Contraseña" required>
+
             <button type="submit">Ingresar</button>
           </form>
         </div>
+
+        <!--Registro-->
         <div class="formulario">
           <h3><i class="fas fa-user-plus"></i> Registrarse</h3>
-          <form id="register-form">
-            <input type="text" placeholder="Nombre completo" required>
-            <input type="email" placeholder="Correo electrónico" required>
-            <input type="password" placeholder="Contraseña" required>
-            <input type="password" placeholder="Confirmar contraseña" required>
+          <form id="register-form" name="registro" action="registro.php" method="POST" enctype="multipart/form-data">
+            <input type="text" name="nombreCom"  placeholder="Nombre completo" required>
+            <input type="email" name="correo" placeholder="Correo electrónico" required>
+            <input type="password" name="contrasena" placeholder="Contraseña" required>
+            <input type="password" name="contrasena2" placeholder="Confirmar contraseña" required>
+
+             <select name="nacionalidad" placeholder="Nacionalidad (Pais)" required>
+                <option value="pais">Mexico</option>
+                <option value="pais">Estados Unidos</option>
+                <option value="pais">Canada</option>
+                <option value="pais">Cuba</option>
+                <option value="pais">Republica dominicana</option>
+                <option value="pais">Guatemala</option>
+                <option value="pais">Honduras</option>
+                <option value="pais">Nicaragua</option>
+                <option value="pais">Costa rica</option>
+                <option value="pais">Panama</option>
+                <option value="pais">Colombia</option>
+                <option value="pais">Puerto rico</option>
+                <option value="pais">Ecuador</option>
+                <option value="pais">Venezuela</option>
+                <option value="pais">Peru</option>
+                <option value="pais">Brasil</option>
+                <option value="pais">Bolivia</option>
+                <option value="pais">Uruguay</option>
+                <option value="pais">Paraguay</option>
+                <option value="pais">Chile</option>
+                <option value="pais">Argentina</option>
+                <option value="pais">Portugal</option>
+                <option value="pais">España</option>
+                <option value="pais">Andorra</option>
+                <option value="pais">Francia</option>
+                <option value="pais">Reino unido</option>
+                <option value="pais">Irlanda</option>
+                <option value="pais">Alemania</option>
+                <option value="pais">Noruega</option>
+                <option value="pais">Suecia</option>
+                <option value="pais">Rusia</option>
+                <option value="pais">India</option>
+                <option value="pais">China</option>
+                <option value="pais">Taiwan</option>
+                <option value="pais">Japon</option>
+                <option value="pais">Sudafrica</option>
+                <option value="pais">Australia</option>
+                <option value="pais">Nueva zelanda</option>
+            </select>
+
             <button type="submit">Crear Cuenta</button>
           </form>
         </div>
@@ -363,8 +409,155 @@
     </div>
   </footer>
 
+  <!-- Modal de mensajes -->
+  <div class="modal fade" id="mensajeModal" tabindex="-1" aria-labelledby="mensajeModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header bg-primary text-white">
+          <h5 class="modal-title" id="mensajeModalLabel">Mensaje</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+        </div>
+        <div class="modal-body" id="mensajeModalBody">
+          <!-- Aquí se insertará el mensaje dinámicamente -->
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
   <script>
-    // === Estado persistente de tema ===
+   document.addEventListener("DOMContentLoaded", () => {
+    const form1 = document.getElementById('login-form');
+
+      form1.addEventListener('submit', function (e) {
+        e.preventDefault();
+
+        const formData = new FormData(form1);
+
+      fetch('inicioSesion.php', {
+        method: 'POST',
+        body: formData
+      })
+      .then(response => response.json())
+      .then(data => {
+        // Insertar el mensaje en el modal
+        document.getElementById('mensajeModalBody').textContent = data.message;
+
+        // Cambiar color de encabezado según éxito o error
+        const modalHeader = document.querySelector('#mensajeModal .modal-header');
+        if (data.success) {
+          modalHeader.classList.remove('bg-danger');
+          modalHeader.classList.add('bg-success');
+          document.getElementById('mensajeModalLabel').textContent = "Éxito";
+        } else {
+          modalHeader.classList.remove('bg-success');
+          modalHeader.classList.add('bg-danger');
+          document.getElementById('mensajeModalLabel').textContent = "Error";
+        }
+
+        // Mostrar modal
+        const modal = new bootstrap.Modal(document.getElementById('mensajeModal'));
+        modal.show();
+
+        // Si es login exitoso, redirige tras 2s
+        if (data.success) {
+          setTimeout(() => {
+            window.location.href = 'index.html';
+          }, 2000);
+        }
+      })
+      .catch(error => {
+        console.error("Error:", error);
+        document.getElementById('mensajeModalBody').textContent = "Error al conectar con el servidor.";
+        document.getElementById('mensajeModalLabel').textContent = "Error";
+        const modalHeader = document.querySelector('#mensajeModal .modal-header');
+        modalHeader.classList.remove('bg-success');
+        modalHeader.classList.add('bg-danger');
+
+        const modal = new bootstrap.Modal(document.getElementById('mensajeModal'));
+        modal.show();
+      });
+
+      });
+    });
+
+
+    const form = document.forms["registro"];
+    form.addEventListener("submit", validarFormulario);
+
+    function mostrarError(id, mensaje) {
+      console.log("Mostrando error en:", id, mensaje);
+      document.getElementById(id).textContent = mensaje;
+    }
+
+    function validarFormulario() {
+      event.preventDefault();
+      let valido = true;
+
+      // Limpiar errores previos
+      document.querySelectorAll(".error").forEach(span => span.textContent = "");
+
+
+      const nomCom = form["nombreCom"].value.trim();
+      const correo = form["correo"].value.trim();
+      const clave = form["contrasena"].value;
+      const pais = form["nacionalidad"].value;
+
+      // Esto valida que tenga el formato: texto@dominio.extensión
+      /*[^@\s]+: Uno o más caracteres que no sean @ ni espacios
+
+      @: El símbolo arroba
+
+      [^@\s]+: El dominio (sin @ ni espacios)
+
+      \.: El punto que separa dominio y extensión
+
+      [^@\s]+: Extensión del dominio*/
+      if (!correo.match(/^[^@\s]+@[^@\s]+\.[^@\s]+$/)) {
+        alert("Debe tener al menos 8 caracteres, con mayúscula, minúscula, número y símbolo.");
+        valido = false;
+      }
+
+      // -Nombre-
+      if (nomCom.length < 3) {
+        //mostrarError("error-usuario", "*Debe tener al menos 3 caracteres.");
+        alert("Nombre invalido. Nisiquiera contiene 3 caracteres")
+        valido = false;
+      }
+
+      // -Contraseña-
+      /*(?=.*[a-z]): Al menos una letra minúscula
+
+      (?=.*[A-Z]): Al menos una letra mayúscula
+
+      (?=.*\d): Al menos un número
+
+      (?=.*[\W_]): Al menos un carácter especial (\W = no alfanumérico, _ se agrega por compatibilidad)
+
+      .{8,}: Mínimo 8 caracteres en total*/
+      const regexClave = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/;
+      if (!regexClave.test(clave)) {
+        //mostrarError("error-clave", "*Debe tener al menos 8 caracteres, con mayúscula, minúscula, número y símbolo.");
+        alert("Debe tener al menos 8 caracteres, con mayúscula, minúscula, número y símbolo.");
+        valido = false;
+      }
+
+        // Si todo es válido, enviamos el formulario (o manejarlo con AJAX)
+        if (valido) {
+  
+          alert("Se ha registrado correctamente");
+          form.submit(); // Quita esto si usas el envío con AJAX
+        }
+        return valido;
+      //FIN de funcion
+    }
+
+    // === Estado persistente de tema === //
     const body = document.body;
     const toggleBtn = document.getElementById('toggle-mode');
     const icon = toggleBtn.querySelector('i');

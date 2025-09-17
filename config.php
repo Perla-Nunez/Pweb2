@@ -1,12 +1,14 @@
 <?php
+$host = "localhost";
+$user = "root";
+$password = "";
+$db = "mundiales_redsocial";
 
-return [
-    'database' => [
-        'host' => 'DESKTOP-V9USV31\SQLEXPRESS',
-        'database' => 'REDSOCIAL',
-        'port' => '1433',
-        'user' => 'izak',
-        'password' => '1442',
-        'charset' => 'utf8mb4'
-    ]
-];
+// Crear conexión
+$conn = new mysqli($host, $user, $password, $db);
+
+// Verifica conexión
+if ($conn->connect_error) {
+    die("Conexión fallida: " . $conn->connect_error);
+}
+?>
