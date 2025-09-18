@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Nuevo Post - MundialFan</title>
+  <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@200..700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <style>
+    body {
+      font-family: 'Oswald', sans-serif;
+      background-color: #f5f5f5;
+      margin: 0;
+      padding: 0;
+    }
+
+    header {
+      background-color: #b00000;
+      padding: 10px 0;
+      text-align: center;
+      color: white;
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: 2.5rem;
+    }
+
+    .contenedor {
+      width: 90%;
+      margin: 20px auto;
+      text-align: center;
+    }
+
+    h2 {
+      font-size: 2rem;
+      margin-bottom: 20px;
+      color: #1e3a8a;
+    }
+
+    .productos {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+      gap: 20px;
+    }
+
+    .productos input, textarea {
+    padding: 10px;
+    width: 40%;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 1rem;
+    }
+
+    .producto {
+      background-color: #ffffff;
+      border-radius: 10px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      padding: 20px;
+      text-align: center;
+    }
+
+    .producto img {
+      max-width: 100%;
+      border-radius: 10px;
+    }
+
+    .producto h3 {
+      font-size: 1.5rem;
+      margin-top: 10px;
+    }
+
+    .producto label {
+      font-size: 1.5rem;
+      margin-top: 10px;
+    }
+
+    .producto p {
+      font-size: 1.2rem;
+      color: #444;
+    }
+
+    .producto .precio {
+      font-size: 1.5rem;
+      font-weight: bold;
+      color: #b00000;
+      margin-top: 10px;
+    }
+
+    input, textarea {
+    padding: 10px;
+    width: 80%;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 1rem;
+    }
+
+    .producto button {
+      background-color: #b00000;
+      color: white;
+      border: none;
+      padding: 10px;
+      margin-top: 15px;
+      font-size: 1.2rem;
+      cursor: pointer;
+      border-radius: 5px;
+      transition: background-color 0.3s;
+    }
+
+    .producto button:hover {
+      background-color: #d21919;
+    }
+
+    /* Estilos para las imágenes de los productos */
+    input[type="file"] {
+     padding: 10px;
+      font-size: 1rem;
+    }
+
+    .video-pre {
+      width: 245px;
+     height: 200px;
+    }
+
+  </style>
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header>
+    <h1>MundialFan</h1>
+  </header>
+
+  <!-- NUEVO POST -->
+  <div class="contenedor">
+    <h2>Nueva Publicacion</h2>
+
+      <!-- Nueva Publicacion -->
+      <div class="producto">
+        <form method="POST">
+
+            <div class="form-group">
+                <label for="nombre">Título:</label><br>
+                <input type="text" id="nombre" name="nombre" required placeholder="Ingrese el nombre del producto o servicio">
+            </div>
+
+            <br>
+
+            <div class="form-group">
+                <label for="descripcion">Descripción:</label><br>
+                <textarea id="descripcion" name="descripcion" rows="4" required placeholder="Ingrese la descripción del producto o servicio"></textarea>
+            </div>
+
+            <br>
+
+            <div class="productos">
+                <div class="form-group">
+                <label for="imagen">Subir imágenes (Opcional)</label><br>
+                <input type="file" id="imagen" name="imagen" accept="image/*" multiple onchange="previewImages(event)">
+
+                
+            </div>
+
+            <div class="form-group">
+                <label for="videoUpload">Subir Video (Opcional)</label><br>
+                <input type="file" id="videoUpload" accept="video/*" onchange="previewVideo(event)">
+            </div>
+
+            <div class="form-group">
+                <div id="image-preview-container"></div>
+                <video id="video-preview" class="video-pre" controls style="display: none;"></video>
+            </div>
+            
+            </div>
+            <br>
+
+        <button type="submit">Publicar Post</button>
+
+        </form>
+      </div>
+
+  </div>
+
+</body>
+    <script>
+    function previewImages(event) {
+        var container = document.getElementById('image-preview-container');
+        container.innerHTML = ''; 
+    
+        var files = event.target.files;
+        for (var i = 0; i < files.length; i++) {
+            var reader = new FileReader();
+            reader.onload = function(e) {
+                var img = document.createElement('img');
+                img.src = e.target.result;
+                img.width = 150; 
+                img.style.margin = "5px";
+                container.appendChild(img);
+            }
+            reader.readAsDataURL(files[i]);
+        }
+    }
+
+    function previewVideo(event) {
+        var file = event.target.files[0];
+        var video = document.getElementById('video-preview');
+
+        if (file) {
+            var objectURL = URL.createObjectURL(file);
+            video.src = objectURL;
+            video.style.display = "block";
+        }
+    }
+    </script>
+</html>
