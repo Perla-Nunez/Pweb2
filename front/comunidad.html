@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Tienda MundialFan</title>
+  <title>Comunidad MundialFan</title>
   <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@200..700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
@@ -149,6 +149,25 @@
       background-color: #d21919;
     }
 
+    /* =======================
+       Footer
+       ======================= */
+    footer {
+      background: var(--nav);
+      color: var(--text);
+      transition: background .3s, color .3s;
+      padding: 30px 20px;
+      border-top: 1px solid var(--border);
+    }
+    .footer-contenido {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 20px;
+    }
+    .redes-sociales a { color: var(--text); margin-right: 10px; font-size: 20px; }
+    .redes-sociales a:hover { color: var(--btn-hover); }
+    .copyright { text-align: center; margin-top: 16px; opacity: .75; font-size: .9rem; }
+
   </style>
 </head>
 <body>
@@ -192,7 +211,7 @@
     </button>
     <span class="dislike-count">0</span>
     </div>
-    </div>
+    </div><br>
 
     <div class="producto"><a href="Post.html">
     <h3>Quien para un FIFA?</h3>
@@ -209,7 +228,7 @@
     </button>
     <span class="dislike-count">0</span>
     </div>
-    </div>
+    </div><br>
 
     <div class="producto"><a href="Post.html">
     <h3>Blue Lock!</h3>
@@ -226,10 +245,50 @@
     </button>
     <span class="dislike-count">0</span>
     </div>
-    </div>
+    </div><br>
 
     </div>
   </div>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="contenedor">
+      <div class="footer-contenido">
+        <div class="footer-seccion">
+          <h4>MundialFan</h4>
+          <p>Tu destino para todo lo relacionado con el Mundial de Fútbol. Ofrecemos las últimas noticias, estadísticas y contenido exclusivo.</p>
+        </div>
+        <div class="footer-seccion">
+          <h4>Enlaces Rápidos</h4>
+          <ul>
+            <li><a href="#">Inicio</a></li>
+            <li><a href="#">Calendario de Partidos</a></li>
+            <li><a href="#">Resultados</a></li>
+            <li><a href="#">Noticias</a></li>
+          </ul>
+        </div>
+        <div class="footer-seccion">
+          <h4>Contacto</h4>
+          <p><i class="fas fa-map-marker-alt"></i> Av. del Fútbol 123, Ciudad Deportiva</p>
+          <p><i class="fas fa-phone"></i> +1 234 567 8900</p>
+          <p><i class="fas fa-envelope"></i> info@mundialfan.com</p>
+        </div>
+        <div class="footer-seccion">
+          <h4>Síguenos</h4>
+          <p>No te pierdas ninguna actualización sobre el mundial</p>
+          <div class="redes-sociales">
+            <a href="#"><i class="fab fa-facebook-f"></i></a>
+            <a href="#"><i class="fab fa-twitter"></i></a>
+            <a href="#"><i class="fab fa-instagram"></i></a>
+            <a href="#"><i class="fab fa-youtube"></i></a>
+          </div>
+        </div>
+      </div>
+      <div class="copyright">
+        <p>&copy; 2023 MundialFan. Todos los derechos reservados.</p>
+      </div>
+    </div>
+  </footer>
 
 </body>
 </html>
