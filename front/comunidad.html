@@ -91,7 +91,6 @@
     }
 
     .productos {
-      display: grid;
       grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
       gap: 20px;
     }
@@ -101,7 +100,7 @@
       border-radius: 10px;
       box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
       padding: 20px;
-      text-align: center;
+      text-align: left;
     }
 
     .producto a {
@@ -112,8 +111,8 @@
       transition: color .2s;
     }
 
-    .producto img {
-      max-width: 100%;
+    .productos img {
+      max-width: 25%;
       border-radius: 10px;
     }
 
@@ -156,16 +155,16 @@
 
   <!-- HEADER -->
   <header>
-    <h1>Tienda MundialFan</h1>
+    <h1>Comunidad MundialFan</h1>
     <nav>
       <div class="nav-wrap">
         <ul class="navbar">
           <li><a href="index.html">Inicio</a></li>
           <li><a href="perfil.html">Perfil</a></li>
-          <li><a href="comunidad.html">Comunidad</a></li>
-          <li><a href="NuevoPost.html">Nuevo Producto</a></li>
+          <li><a href="tienda.html">Tienda</a></li>
+          <li><a href="NuevoPost.html">Nuevo Post</a></li>
           <li><div class="search-bar">
-                <input type="text" placeholder="Buscar productos">
+                <input type="text" placeholder="Buscar Post">
                 <button type="submit">Buscar</button>
           </div></li>
         </ul>
@@ -173,40 +172,61 @@
     </nav>
   </header>
 
-  <!-- CONTENIDO DE LA TIENDA -->
+  <!-- CONTENIDO DE LA COMUNIDAD -->
   <div class="contenedor">
-    <h2>Artículos Disponibles</h2>
+    <h2>Nuevos Posts</h2>
 
     <div class="productos">
-      <!-- Producto México -->
-      <div class="producto"><a href="PostProducto.html">
-        <img src="https://www.innovasport.com/medias/jersey-adidas-seleccion-nacional-de-mexico-local-mundial-2022-is-HE8847-2.jpg?context=bWFzdGVyfGltYWdlc3wxNTU5NjN8aW1hZ2UvanBlZ3xhVzFoWjJWekwyaGhOUzlvWmpndk1URXdOek15TWpBNE1EUTJNemd1YW5CbnxjMjA1NTkyODdmYmJlZWUwMWM3ODQ5NzkwNTA0Njc1MTg4YTE2MmZjZGZhNWJkN2IwMzAwMmM4ZDMwYWM4YTg1" alt="Camiseta México">
-        <h3>Camiseta México - Local Mundial 2022</h3>
-        <p>¡Lleva los colores de la selección mexicana al mundial! Camiseta oficial Adidas de la selección mexicana.</p>
-        <p class="precio">$1,299.99 MXN</p>
-        <button>Añadir al carrito</button>
-        <button>Comprar Ahora</button>
-      </a></div>
+    <div class="producto"><a href="Post.html">
+    <h3>Muy emocionado por el Mundial!</h3>
+    <p>¡Lleva los colores de la selección mexicana al mundial! Camiseta oficial Adidas de la selección mexicana.</p>
+    <img src="imagenes/Mascota.jpg" alt="Camiseta México">
+    </a>
+    <div class="interaccion-post" data-post-id="1"> <button class="like-btn">
+        <i class="fas fa-thumbs-up"></i>
+    </button>
+    <span class="like-count">0</span>
 
-      <!-- Producto Argentina -->
-      <div class="producto"><a href="PostProducto.html">
-        <img src="https://static.wixstatic.com/media/bc4d4f_14ebe2e022bf480a84ed838fad571ab8~mv2.png/v1/fill/w_568,h_568,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/bc4d4f_14ebe2e022bf480a84ed838fad571ab8~mv2.png" alt="Camiseta Argentina">
-        <h3>Camiseta Argentina - Local Mundial 2022</h3>
-        <p>La camiseta oficial de la selección argentina, perfecta para apoyar a tu equipo en el mundial.</p>
-        <p class="precio">$1,499.99 MXN</p>
-        <button>Añadir al carrito</button>
-        <button>Comprar Ahora</button>
-      </a></div>
+    <button class="dislike-btn">
+        <i class="fas fa-thumbs-down"></i>
+    </button>
+    <span class="dislike-count">0</span>
+    </div>
+    </div>
 
-      <!-- Producto Brasil -->
-      <div class="producto"><a href="PostProducto.html">
-        <img src="https://m.media-amazon.com/images/I/31HKowf9IOL._SY1000_.jpg" alt="Camiseta Brasil">
-        <h3>Camiseta Brasil - Local Mundial 2022</h3>
-        <p>La camiseta de la selección brasileña, ideal para vivir la pasión del fútbol en el mundial.</p>
-        <p class="precio">$1,399.99 MXN</p>
-        <button>Añadir al carrito</button>
-        <button>Comprar Ahora</button>
-      </a></div>
+    <div class="producto"><a href="Post.html">
+    <h3>Quien para un FIFA?</h3>
+    <p>¡Lleva los colores de la selección mexicana al mundial! Camiseta oficial Adidas de la selección mexicana.</p>
+    <img src="imagenes/balon.png" alt="Camiseta México">
+    </a>
+    <div class="interaccion-post" data-post-id="1"> <button class="like-btn">
+        <i class="fas fa-thumbs-up"></i>
+    </button>
+    <span class="like-count">0</span>
+
+    <button class="dislike-btn">
+        <i class="fas fa-thumbs-down"></i>
+    </button>
+    <span class="dislike-count">0</span>
+    </div>
+    </div>
+
+    <div class="producto"><a href="Post.html">
+    <h3>Blue Lock!</h3>
+    <p>¡Lleva los colores de la selección mexicana al mundial! Camiseta oficial Adidas de la selección mexicana.</p>
+    <img src="imagenes/Mundi.jpg" alt="Camiseta México">
+    </a>
+    <div class="interaccion-post" data-post-id="1"> <button class="like-btn">
+        <i class="fas fa-thumbs-up"></i>
+    </button>
+    <span class="like-count">0</span>
+
+    <button class="dislike-btn">
+        <i class="fas fa-thumbs-down"></i>
+    </button>
+    <span class="dislike-count">0</span>
+    </div>
+    </div>
 
     </div>
   </div>
