@@ -78,7 +78,11 @@ if ($resultado && $resultado->num_rows === 1) {
 
         $response['success'] = true;
         $response['message'] = 'Login exitoso';
+        // Añadir el nombre a la respuesta para usarlo inmediatamente en el cliente
+        $response['id_usuario'] = $usuario['id_usuario'] ?? null; // <--- NUEVO
+        $response['nombre_completo'] = $usuario['nombre_completo'] ?? 'Usuario';
     } else {
+
         $response['success'] = false;
         $response['message'] = 'Correo o contraseña incorrecta';
     }

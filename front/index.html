@@ -466,8 +466,13 @@
 
         // Si es login exitoso, redirige tras 2s
         if (data.success) {
+          // *** NUEVO: Guarda el ID del usuario en localStorage ***
+          localStorage.setItem('usuarioId', data.id_usuario); 
+          // Guarda el nombre de usuario
+          localStorage.setItem('usuarioNombre', data.nombre_completo); 
+          
           setTimeout(() => {
-            window.location.href = 'index.html';
+            window.location.href = 'tienda.html'; 
           }, 2000);
         }
       })

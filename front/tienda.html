@@ -180,7 +180,7 @@
       <div class="nav-wrap">
         <ul class="navbar">
           <li><a href="index.html">Inicio</a></li>
-          <li><a href="perfil.html">Perfil</a></li>
+          <li id="perfil-link"><a href="perfil.html">Perfil</a></li>
           <li><a href="comunidad.html">Comunidad</a></li>
           <li><a href="NuevoPost.html">Nuevo Producto</a></li>
           <li><div class="search-bar">
@@ -270,6 +270,23 @@
       </div>
     </div>
   </footer>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const perfilLink = document.getElementById('perfil-link').querySelector('a');
+      const nombreUsuario = localStorage.getItem('usuarioNombre');
+
+      if (nombreUsuario && perfilLink) {
+        // Muestra el nombre si existe en localStorage
+        perfilLink.textContent = nombreUsuario.split(' ')[0]; // Muestra solo el primer nombre
+        // Puedes cambiar el 'href' para que vaya al perfil correcto o dejarlo igual
+      } else if (perfilLink) {
+        // Si no hay nombre, se asume que no ha iniciado sesión, podrías redirigir o mostrar 'Iniciar Sesión'
+        perfilLink.textContent = 'Iniciar Sesión';
+        perfilLink.href = 'index.html'; // Lo enviamos de vuelta al inicio
+      }
+    });
+  </script>
 
 </body>
 </html>

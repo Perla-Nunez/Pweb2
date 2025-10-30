@@ -323,8 +323,8 @@
                 </div>
 
                 <div class="profile-details">
-                    <p class="profile-name"><strong>Nombre(s) Apellidos</strong> </p>
-                    <p><strong>Email@ejemplo.com</strong> </p>
+                    <p><strong>Nombre Completo:</strong> <span id="perfil-nombre">Cargando...</span></p>
+                    <p><strong>Correo Electrónico:</strong> <span id="perfil-correo">Cargando...</span></p>
                 </div>
                 
                 <div class="profile-other-group">
@@ -333,7 +333,8 @@
                         <p><strong>Genero: </strong>Hombre</p>
                     </div>
                     <div class="profile-otherdets-ubi">
-                        <p><strong>Ubicacion: </strong>Mexíco</p>
+                        <p><strong>Nacionalidad:</strong> <span id="perfil-nacionalidad">Cargando...</span></p>
+                        <p><strong>Rol:</strong> <span id="perfil-rol">Cargando...</span></p>
                     </div>
                 </div>
             </div>
@@ -398,5 +399,55 @@
       </div>
     </div>
   </footer>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+        const perfilLinkElement = document.getElementById('perfil-link');
+        if (perfilLinkElement) {
+            const perfilAnchor = perfilLinkElement.querySelector('a');
+            const nombreUsuario = localStorage.getItem('usuarioNombre');
+            
+            if (nombreUsuario && perfilAnchor) {
+                perfilAnchor.textContent = nombreUsuario.split(' ')[0];
+                perfilAnchor.href = 'perfil.html'; 
+            } else if (perfilAnchor) {
+                perfilAnchor.textContent = 'Iniciar Sesión';
+                perfilAnchor.href = 'index.html'; 
+                // Si no hay sesión, redirige inmediatamente al login
+                alert("Necesitas iniciar sesión para ver tu perfil.");
+                window.location.href = 'index.html';
+            }
+        }
+
+
+        // Lógica para cargar los datos del perfil
+        fetch('obtenerPerfil.php', {
+            method: 'POST', // POST para mayor seguridad, aunque GET funcionaría
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Actualiza los elementos HTML con los datos
+                document.getElementById('perfil-nombre').textContent = data.data.nombre_completo;
+                document.getElementById('perfil-correo').textContent = data.data.correo;
+                document.getElementById('perfil-nacionalidad').textContent = data.data.nacionalidad || 'N/A';
+                document.getElementById('perfil-rol').textContent = data.data.rol;
+            } else {
+                // Si el servidor indica error (ej. sesión expirada), redirigir
+                console.error("Error al cargar perfil:", data.message);
+                alert("Error de sesión. Serás redirigido.");
+                window.location.href = 'index.html';
+            }
+        })
+        .catch(error => {
+            console.error('Error de red:', error);
+            alert("Error de conexión al servidor.");
+        });
+
+    });
+</script>
 </body>
 </html>

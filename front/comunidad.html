@@ -179,7 +179,7 @@
       <div class="nav-wrap">
         <ul class="navbar">
           <li><a href="index.html">Inicio</a></li>
-          <li><a href="perfil.html">Perfil</a></li>
+          <li id="perfil-link"><a href="perfil.html">Perfil</a></li>
           <li><a href="tienda.html">Tienda</a></li>
           <li><a href="NuevoPost.html">Nuevo Post</a></li>
           <li><div class="search-bar">
@@ -289,6 +289,27 @@
       </div>
     </div>
   </footer>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const perfilLinkElement = document.getElementById('perfil-link');
+      if (!perfilLinkElement) return; 
+
+      const perfilAnchor = perfilLinkElement.querySelector('a');
+      const nombreUsuario = localStorage.getItem('usuarioNombre');
+      const idUsuario = localStorage.getItem('usuarioId'); 
+
+      if (nombreUsuario && perfilAnchor) {
+        perfilAnchor.textContent = nombreUsuario.split(' ')[0];
+        // Enlace al perfil si está logueado
+        perfilAnchor.href = 'perfil.html'; 
+      } else if (perfilAnchor) {
+        // Si no hay sesión, muestra 'Iniciar Sesión' y redirige a index
+        perfilAnchor.textContent = 'Iniciar Sesión';
+        perfilAnchor.href = 'index.html'; 
+      }
+    });
+</script>
 
 </body>
 </html>
