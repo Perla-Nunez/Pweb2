@@ -1,0 +1,90 @@
+CREATE DATABASE IF NOT EXISTS mundiales_redsocial
+  DEFAULT CHARACTER SET utf8mb4
+  DEFAULT COLLATE utf8mb4_unicode_ci;
+
+USE mundiales_redsocial;
+
+CREATE TABLE usuario (
+    id_usuario INT AUTO_INCREMENT PRIMARY KEY,
+    nombre_completo VARCHAR(150) NOT NULL,
+    nacionalidad VARCHAR(100),
+    correo VARCHAR(150) NOT NULL UNIQUE,
+    password VARCHAR(255) NOT NULL,
+    rol ENUM('normal','admin') DEFAULT 'normal'
+);
+
+
+CREATE TABLE mundial (
+    id_mundial INT AUTO_INCREMENT PRIMARY KEY,
+    año YEAR NOT NULL,
+    pais_sede VARCHAR(100) NOT NULL
+);
+
+CREATE TABLE publicacion (
+    id_publicacion INT AUTO_INCREMENT PRIMARY KEY,
+    id_usuario INT NOT NULL,
+    id_mundial INT NOT NULL,
+    titulo VARCHAR(150) NOT NULL,
+    descripcion TEXT,
+    tipo ENUM('imagen','video') NOT NULL,
+    url_contenido VARCHAR(255) NOT NULL,
+    fecha_elaboracion DATETIME NOT NULL,
+    fecha_aprobacion DATETIME,
+    estado ENUM('pendiente','aprobada','rechazada') DEFAULT 'pendiente',
+    vistas INT DEFAULT 0,
+    CONSTRAINT fk_publicacion_usuario FOREIGN KEY (id_usuario) REFERENCES usuario(id_usuario)
+      ON DELETE CASCADE,
+    CONSTRAINT fk_publicacion_mundial FOREIGN KEY (id_mundial) REFERENCES mundial(id_mundial)
+      ON DELETE CASCADE
+);
+
+CREATE TABLE categoria (
+    id_categoria INT AUTO_INCREMENT PRIMARY KEY,
+    nombre VARCHAR(100) NOT NULL UNIQUE
+);
+
+CREATE TABLE publicacion_categoria (
+    id_publicacion INT NOT NULL,
+    id_categoria INT NOT NULL,
+    PRIMARY KEY (id_publicacion, id_categoria),
+    CONSTRAINT fk_pc_publicacion FOREIGN KEY (id_publicacion) REFERENCES publicacion(id_publicacion)
+      ON DELETE CASCADE,
+    CONSTRAINT fk_pc_categoria FOREIGN KEY (id_categoria) REFERENCES categoria(id_categoria)
+      ON DELETE CASCADE
+);
+
+CREATE TABLE comentario (
+    id_comentario INT AUTO_INCREMENT PRIMARY KEY,
+    id_publicacion INT NOT NULL,
+    id_usuario INT NOT NULL,
+    texto TEXT NOT NULL,
+    fecha TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    activo BOOLEAN DEFAULT TRUE,
+    CONSTRAINT fk_comentario_publicacion FOREIGN KEY (id_publicacion) REFERENCES publicacion(id_publicacion)
+      ON DELETE CASCADE,
+    CONSTRAINT fk_comentario_usuario FOREIGN KEY (id_usuario) REFERENCES usuario(id_usuario)
+      ON DELETE CASCADE
+);
+
+CREATE TABLE calificacion (
+    id_calificacion INT AUTO_INCREMENT PRIMARY KEY,
+    id_publicacion INT NOT NULL,
+    id_usuario INT NOT NULL,
+    puntuacion TINYINT NOT NULL CHECK (puntuacion BETWEEN 1 AND 5),
+    fecha TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT fk_calificacion_publicacion FOREIGN KEY (id_publicacion) REFERENCES publicacion(id_publicacion)
+      ON DELETE CASCADE,
+    CONSTRAINT fk_calificacion_usuario FOREIGN KEY (id_usuario) REFERENCES usuario(id_usuario)
+      ON DELETE CASCADE
+);
+
+CREATE TABLE likes (
+    id_like INT AUTO_INCREMENT PRIMARY KEY,
+    id_publicacion INT NOT NULL,
+    id_usuario INT NOT NULL,
+    fecha TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT fk_like_publicacion FOREIGN KEY (id_publicacion) REFERENCES publicacion(id_publicacion)
+      ON DELETE CASCADE,
+    CONSTRAINT fk_like_usuario FOREIGN KEY (id_usuario) REFERENCES usuario(id_usuario)
+      ON DELETE CASCADE
+);

@@ -1,13 +1,12 @@
 <?php
-$host = "localhost";
-$user = "root";
-$password = "";
-$db = "mundiales_redsocial";
+$host = getenv("DB_HOST");
+$port = getenv("DB_PORT");
+$user = getenv("DB_USER");
+$password = getenv("DB_PASSWORD");
+$db = getenv("DB_NAME");
 
-// Crear conexión
-$conn = new mysqli($host, $user, $password, $db);
+$conn = new mysqli($host, $user, $password, $db, $port);
 
-// Verifica conexión
 if ($conn->connect_error) {
     die("Conexión fallida: " . $conn->connect_error);
 }
