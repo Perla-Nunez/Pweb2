@@ -133,6 +133,17 @@
       margin-top: 10px;
     }
 
+    .producto-card {
+    background-color: #ffffff;
+    border: 1px solid #e6e6e6;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s;
+    text-align: left;
+    padding: 15px;
+    }
+
     .producto button {
       background-color: #b00000;
       color: white;
@@ -163,6 +174,28 @@
 
     button:hover {
       background-color: #d21919;
+    }
+
+   .carrito-main {
+    width: 90%;
+    max-width: 1200px;
+    margin: 30px auto;
+    }
+    
+    #carrito-items {
+      display: grid; /* o display: flex; flex-wrap: wrap; */
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); 
+      gap: 20px; /* Espacio entre los productos */
+      padding: 20px;
+    }
+
+    .product-card.carrito-item {
+      text-align: center;
+      max-width: 300px; /* Ajusta este valor si es necesario */
+    }
+
+    .product-card .product-info p {
+      margin: 5px 0;
     }
 
     /* =======================
@@ -199,8 +232,10 @@
           <li><a href="comunidad.html">Comunidad</a></li>
           <li><a href="NuevoPost.html">Nuevo Producto</a></li>
           <li><div class="search-bar">
-                <input type="text" placeholder="Buscar Post">
-                <button type="submit">Buscar</button>
+                <form action="tienda.html" method="GET" class="search-form">
+                <input type="text" name="q" placeholder="Buscar productos..." required>
+                <button type="submit"><i class="fas fa-search"></i></button>
+                </form>
           </div></li>
         </ul>
       </div>
@@ -208,45 +243,15 @@
   </header>
 
   <!-- CONTENIDO DE LA COMUNIDAD -->
-  <div class="contenedor">
-    <h2>Carrito</h2>
-
-    <div class="productos">
-    <div class="producto"><a href="PostProducto.html">
-    <h3>Camiseta México - Local Mundial 2022</h3>
-    <h2>Precio: $200 MX</h2>
-    <p>¡Lleva los colores de la selección mexicana al mundial! Camiseta oficial Adidas de la selección mexicana.</p>
-    <img src="https://www.innovasport.com/medias/jersey-adidas-seleccion-nacional-de-mexico-local-mundial-2022-is-HE8847-2.jpg?context=bWFzdGVyfGltYWdlc3wxNTU5NjN8aW1hZ2UvanBlZ3xhVzFoWjJWekwyaGhOUzlvWmpndk1URXdOek15TWpBNE1EUTJNemd1YW5CbnxjMjA1NTkyODdmYmJlZWUwMWM3ODQ5NzkwNTA0Njc1MTg4YTE2MmZjZGZhNWJkN2IwMzAwMmM4ZDMwYWM4YTg1" alt="Camiseta México">
-    </a>
-    <div class="interaccion-post" data-post-id="1"> <button class="like-btn">
-        Comprar Ahora
-    </button>
-
-    <button class="dislike-btn">
-        Quitar del Carrito
-    </button>
+  <main class="carrito-main">
+    <h2>Mi Carrito</h2>
+    <div id="carrito-items">
+        <p>Cargando carrito...</p>
     </div>
-    </div><br>
 
-    <div class="producto"><a href="PostProducto.html">
-    <h3>Camiseta Argentina - Local Mundial 2022</h3>
-    <h2>Precio: $350 MX</h2>
-    <p>¡Lleva los colores de la selección mexicana al mundial! Camiseta oficial Adidas de la selección mexicana.</p>
-    <img src="https://static.wixstatic.com/media/bc4d4f_14ebe2e022bf480a84ed838fad571ab8~mv2.png/v1/fill/w_568,h_568,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/bc4d4f_14ebe2e022bf480a84ed838fad571ab8~mv2.png" alt="Camiseta México">
-    </a>
-    <div class="interaccion-post" data-post-id="1"> <button class="like-btn">
-        Comprar Ahora
-    </button>
-
-    <button class="dislike-btn">
-        Quitar del Carrito
-    </button>
-    </div>
-    </div><br>
-
-    <button>Proceder con la compra</button><br><br>
-    </div>
-  </div>
+    <div id="carrito-resumen">
+        </div>
+  </main>
 
   <!-- FOOTER -->
   <footer>
@@ -289,4 +294,136 @@
   </footer>
 
 </body>
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        // **IMPORTANTE: Obtener el ID del usuario del localStorage/sesión**
+        const idUsuario = localStorage.getItem('usuarioId'); 
+        
+        if (!idUsuario) {
+            document.getElementById('carrito-items').innerHTML = '<p>Debes iniciar sesión para ver tu carrito.</p>';
+            document.getElementById('carrito-resumen').style.display = 'none';
+            return;
+        }
+
+        cargarCarrito(idUsuario);
+    });
+
+    function agregarEventListenersEliminar() {
+        document.querySelectorAll('.btn-eliminar').forEach(button => {
+            button.addEventListener('click', async (e) => {
+                const idCarrito = e.target.getAttribute('data-id-carrito');
+                
+                if (confirm('¿Estás seguro de que quieres eliminar este producto del carrito?')) {
+                    await eliminarDelCarrito(idCarrito);
+                }
+            });
+        });
+    }
+
+    async function eliminarDelCarrito(id_carrito) {
+        try {
+            const formData = new FormData();
+            formData.append('id_carrito', id_carrito);
+
+            const response = await fetch('eliminar_del_carrito.php', {
+                method: 'POST',
+                body: formData
+            });
+
+            const data = await response.json();
+
+            if (data.success) {
+                alert(data.message);
+                // Recargar el carrito para actualizar la vista
+                const idUsuario = localStorage.getItem('usuarioId'); 
+                cargarCarrito(idUsuario); 
+            } else {
+                alert('Error al eliminar: ' + data.message);
+            }
+        } catch (error) {
+            console.error('Error de conexión al eliminar:', error);
+            alert('Error de conexión con el servidor.');
+        }
+    }
+
+    async function cargarCarrito(id_usuario) {
+        const itemsContenedor = document.getElementById('carrito-items');
+        const resumenContenedor = document.getElementById('carrito-resumen');
+        let totalCarrito = 0;
+
+        itemsContenedor.innerHTML = '<p>Cargando productos...</p>';
+        resumenContenedor.innerHTML = '';
+
+        try {
+            // Llama al script PHP para obtener los productos del usuario
+            const response = await fetch(`obtener_carrito.php?id_usuario=${id_usuario}`);
+            const data = await response.json();
+
+            if (data.success && data.data.length > 0) {
+                itemsContenedor.innerHTML = ''; // Limpiar el mensaje de carga
+
+                data.data.forEach(item => {
+                    const subtotal = parseFloat(item.PRECIO) * parseInt(item.CANTIDAD);
+                    totalCarrito += subtotal;
+
+                    const itemHTML = crearItemCarrito(item, subtotal);
+                    itemsContenedor.appendChild(itemHTML);
+                });
+
+                agregarEventListenersEliminar();
+
+                // Mostrar el total
+                mostrarResumen(totalCarrito, resumenContenedor);
+
+            } else {
+                itemsContenedor.innerHTML = `<p>${data.message || 'Error al cargar el carrito.'}</p>`;
+                resumenContenedor.style.display = 'none';
+            }
+        } catch (error) {
+            console.error('Error al obtener carrito:', error);
+            itemsContenedor.innerHTML = '<p>Error de conexión con el servidor. Inténtelo más tarde.</p>';
+        }
+    }
+
+
+function crearItemCarrito(item, subtotal) {
+    const div = document.createElement('div');
+    
+    // *** CLAVE: Usamos la misma clase principal de la tienda (ej. 'product-card') ***
+    div.className = 'product-card carrito-item'; 
+
+    div.innerHTML = `
+        <div class="producto-card">
+            <img src="${item.url_contenido}" alt="${item.TITULO}" class="product-image" 
+             onerror="this.src='imagenes/blank.jpg';">
+            <h3 class="product-title">${item.TITULO}</h3>
+            
+            <p class="product-price">Precio: $${parseFloat(item.PRECIO).toFixed(2)}</p>
+            
+            <p>Cantidad: <strong class="cantidad">${item.CANTIDAD}</strong></p>
+            <p>Subtotal: <strong>$${subtotal.toFixed(2)}</strong></p>
+
+<button class="btn-eliminar" data-id-carrito="${item.ID_CARRITO}">Eliminar</button>        </div>
+    `;
+    return div;
+}
+
+    function mostrarResumen(total, contenedor) {
+        contenedor.innerHTML = `
+            <hr>
+            <div class="contenedor">
+            <h3>Resumen del Pedido</h3>
+            <p>Total a pagar: <strong>$${total.toFixed(2)}</strong></p>
+<button class="btn-checkout" onclick="procederPago(${total.toFixed(2)})">Proceder al Pago</button>            </div>
+        `;
+        contenedor.style.display = 'block';
+    }
+
+    // Nueva función para redirigir al checkout
+    function procederPago(total) {
+        // Guardar el total en la sesión temporalmente
+        localStorage.setItem('totalPago', total);
+        window.location.href = 'pago_checkout.html';
+    }
+</script>
 </html>

@@ -138,18 +138,18 @@
 
       <!-- Nueva Publicacion -->
       <div class="producto">
-        <form method="POST">
+        <form id="post-form" action="guardarPost.php" method="POST" enctype="multipart/form-data">
 
             <div class="form-group">
                 <label for="nombre">Título:</label><br>
-                <input type="text" id="nombre" name="nombre" required placeholder="Ingrese el nombre del producto o servicio">
+                <input type="text" id="titulo" name="titulo" required placeholder="Ingrese el nombre del producto o servicio">
             </div>
 
             <br>
 
-            <div class="form-group">
-                <label for="nombre">Precio:</label><br>
-                <input type="number" id="precio" name="precio" required placeholder="Ingrese el precio del producto">
+            <div id="campo-precio" style="display: none;">
+              <label for="precio">Precio:</label>
+              <input type="number" id="precio" name="precio" step="0.01" min="0" placeholder="0.00">
             </div>
 
             <br>
@@ -178,6 +178,9 @@
                 <div id="image-preview-container"></div>
                 <video id="video-preview" class="video-pre" controls style="display: none;"></video>
             </div>
+
+            <input type="hidden" id="post-origen" name="post_origen" value="">
+            <input type="hidden" id="id-usuario" name="id_usuario" value="">
             
             </div>
             <br>
@@ -191,6 +194,84 @@
 
 </body>
     <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        // Lógica de visibilidad del campo de Precio
+        const urlParams = new URLSearchParams(window.location.search);
+        const origen = urlParams.get('origen'); 
+        
+        const campoPrecioDiv = document.getElementById('campo-precio');
+        const precioInput = document.getElementById('precio');
+        const postOrigenInput = document.getElementById('post-origen');
+
+        // Lógica de visibilidad y campos requeridos
+        if (origen === 'producto') {
+            // Mostrar precio y hacerlo obligatorio
+            campoPrecioDiv.style.display = 'block'; 
+            precioInput.required = true;
+            precioInput.setAttribute('name', 'precio'); // Asegura que el nombre esté para envío
+            document.title = "Nuevo Producto";
+        } else if (origen === 'publicacion') {
+            // Ocultar precio, asegurar que no sea obligatorio, y QUITAR EL NAME
+            campoPrecioDiv.style.display = 'none'; // <-- Esto lo oculta
+            precioInput.required = false;
+            precioInput.value = ''; // Limpiar el valor por si acaso
+            precioInput.removeAttribute('name'); // <-- ESTO ES CLAVE: Impide que el campo se envíe
+            document.title = "Nueva Publicación";
+        } else {
+            // Si el origen no está claro
+            alert("Tipo de publicación no especificado. Serás redirigido a la comunidad.");
+            window.location.href = 'comunidad.html';
+            return;
+        }
+
+        // Asignar el origen al campo oculto
+        postOrigenInput.value = origen;
+
+        // Lógica para obtener el ID de usuario
+        const idUsuario = localStorage.getItem('usuarioId');
+        const idUsuarioInput = document.getElementById('id-usuario');
+        
+        if (idUsuario) {
+            idUsuarioInput.value = idUsuario;
+        } else {
+            // Si no hay ID, forzar redirección (sin login no se puede publicar)
+            alert("Necesitas iniciar sesión para crear una publicación.");
+            window.location.href = 'index.html';
+        }
+    });
+
+    const postForm = document.getElementById('post-form');
+    if (postForm) {
+        postForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            // Usar FormData para manejar campos y archivos
+            const formData = new FormData(this);
+
+            fetch('guardarPost.php', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                alert(data.message); // Muestra el mensaje de éxito o error
+
+                if (data.success) {
+                    // Redireccionar al origen correcto
+                    if (data.destino === 'producto') {
+                        window.location.href = 'tienda.html';
+                    } else { // 'publicacion'
+                        window.location.href = 'comunidad.html';
+                    }
+                }
+            })
+            .catch(error => {
+                alert('Ocurrió un error de red al intentar publicar.');
+                console.error('Error:', error);
+            });
+        });
+    }
+
     function previewImages(event) {
         var container = document.getElementById('image-preview-container');
         container.innerHTML = ''; 

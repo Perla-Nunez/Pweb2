@@ -179,6 +179,146 @@
         
     }
 
+    /* Estilos para PostProducto.html */
+
+.producto-full-card {
+    display: flex;
+    flex-wrap: wrap; /* Permite que los elementos se apilen en móviles */
+    gap: 40px;
+    background-color: white;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    margin-bottom: 30px;
+}
+
+.media-container-full {
+    flex: 1 1 400px; /* Ocupa el espacio y permite crecer/encoger */
+    max-width: 600px;
+    min-height: 300px;
+    background-color: #eee;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.media-container-full img, .media-container-full video {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+.detalle-info {
+    flex: 1 1 300px;
+    text-align: left;
+}
+
+#producto-titulo {
+    font-size: 2.5rem;
+    margin-bottom: 10px;
+    color: #b00000;
+}
+
+#producto-descripcion {
+    font-size: 1.1rem;
+    line-height: 1.6;
+    color: #555;
+    margin-bottom: 20px;
+}
+
+.precio-label {
+    font-size: 1rem;
+    color: #999;
+    margin-bottom: 0;
+}
+
+#producto-precio {
+    font-size: 3rem;
+    color: #4CAF50;
+    margin-top: 5px;
+    margin-bottom: 20px;
+}
+
+.vendedor-info {
+    margin: 20px 0;
+    padding: 15px;
+    border: 1px dashed #ccc;
+    border-radius: 5px;
+}
+
+.vendedor-info h4 {
+    margin: 5px 0 0 0;
+    color: #1e3a8a;
+}
+
+.btn-comprar-full {
+    display: block;
+    width: 100%;
+    padding: 15px;
+    background-color: #1e3a8a; 
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 1.2rem;
+    transition: background-color 0.3s;
+    margin-top: 20px;
+}
+
+.btn-comprar-full:hover {
+    background-color: #3b82f6;
+}
+
+/* ====================================
+   ESTILOS PARA DETALLES DEL PRODUCTO
+   ==================================== */
+
+.post-product-container {
+    display: flex; 
+    gap: 30px; 
+    align-items: flex-start; 
+    max-width: 1200px;
+    margin: 20px auto;
+    padding: 0 15px; 
+}
+
+.media-container {
+    flex: 0 0 40%;
+    max-width: 40%;
+}
+
+.media-container img {
+    width: 100%;
+    height: auto;
+    display: block;
+    border-radius: 8px; 
+}
+
+.product-details {
+    flex: 1; 
+    padding: 20px;
+    background-color: #ffffff; 
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+@media (max-width: 768px) {
+    .post-product-container {
+        flex-direction: column; 
+        align-items: center;
+        gap: 20px;
+    }
+
+    .media-container,
+    .product-details {
+        flex: 0 0 100%;
+        max-width: 100%;
+        width: 100%;
+    }
+}
+
   </style>
 </head>
 <body>
@@ -188,33 +328,26 @@
     <h1>MundialFan</h1>
   </header>
 
-  <!-- Post Actual -->
-  <div class="contenedor">
+  <div class="post-product-container" id="producto-detalle" style="display: none;">
 
-      <div class="producto">
-        <div class="productos">
-            <div class="form-group">
-                <h3>Publicacion de Producto de Prueba</h3>
-                <h2>Precio: $100</h2>
-                <p>Descripcion:</p>
-                <p>Camiseta de la seleccion Mexicana.</p>
-                <button type="submit">Añadir al Carrito</button>
-                <button type="submit">Comprar Ahora</button>
-            </div>
+    <div class="media-container" id="media-container-full">
+        <img src="imagenes/blank.jpg" class="active" alt="Placeholder">
+    </div>
 
-            <div class="form-group">
-                <div class="media-container">
-                    <img src="https://www.innovasport.com/medias/jersey-adidas-seleccion-nacional-de-mexico-local-mundial-2022-is-HE8847-2.jpg?context=bWFzdGVyfGltYWdlc3wxNTU5NjN8aW1hZ2UvanBlZ3xhVzFoWjJWekwyaGhOUzlvWmpndk1URXdOek15TWpBNE1EUTJNemd1YW5CbnxjMjA1NTkyODdmYmJlZWUwMWM3ODQ5NzkwNTA0Njc1MTg4YTE2MmZjZGZhNWJkN2IwMzAwMmM4ZDMwYWM4YTg1" alt="Media 1" class="active">
-                    
-                </div>
-                <div class="media-selector">
-                    <button class="active-dot" onclick="showMedia(0)"></button>
-                    
-                </div>
-            </div>
+    <div class="product-details">
+        <h2 id="producto-titulo"></h2>
+        <p class="precio">
+            <strong>Precio:</strong> <span id="producto-precio"></span> 
+        </p>
+        <div class="descripcion">
+            <strong>Descripción:</strong> <p id="producto-descripcion"></p>
         </div>
-        
-      </div>
+        <button class="btn-comprar">Añadir al Carrito</button>
+        <p class="vendedor">Vendido por: <span id="producto-vendedor"></span></p>
+    </div>
+
+    </div>
+    <p id="loading-message" style="text-align: center;">Cargando detalles del producto...</p>
 
       <h2>Otros Productos</h2>
 
@@ -257,17 +390,101 @@
     </div>
 </body>
 <script>
-    const mediaItems = document.querySelectorAll('.media-container img, .media-container video');
-    const mediaDots = document.querySelectorAll('.media-selector button');
+    document.addEventListener("DOMContentLoaded", () => {
+    const params = new URLSearchParams(window.location.search);
+    const idProducto = params.get('id');
 
-    function showMedia(index) {
-        
-        mediaItems.forEach(item => item.classList.remove('active'));
-        mediaDots.forEach(dot => dot.classList.remove('active-dot'));
-        
-        mediaItems[index].classList.add('active');
-        mediaDots[index].classList.add('active-dot');
+    const detalleContenedor = document.getElementById('producto-detalle');
+    const mensajeCarga = document.getElementById('loading-message');
+
+    if (!idProducto) {
+        mensajeCarga.textContent = 'Error: ID de producto no encontrado en la URL.';
+        detalleContenedor.style.display = 'none'; 
+        return;
     }
+
+    cargarDetallesProducto(idProducto, detalleContenedor, mensajeCarga);
+
+    const btnComprar = document.querySelector('.btn-comprar');
+    btnComprar.addEventListener('click', () => {
+
+        const idUsuario = localStorage.getItem('usuarioId'); 
+        
+        if (!idUsuario) {
+            alert('Debes iniciar sesión para añadir productos al carrito.');
+            window.location.href = 'index.html'; 
+            return;
+        }
+
+        agregarProductoACarrito(idProducto, idUsuario);
+    });
+});
+
+async function agregarProductoACarrito(id_producto, id_usuario) {
+    const data = new URLSearchParams();
+    data.append('id_producto', id_producto);
+    data.append('id_usuario', id_usuario);
+    data.append('cantidad', 1); // Añade 1 por defecto
+
+    try {
+        const response = await fetch('agregar_a_carrito.php', {
+            method: 'POST',
+            body: data,
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+        });
+        const result = await response.json();
+
+        if (result.success) {
+            alert(result.message);
+        } else {
+            alert('Error al añadir producto: ' + result.message);
+        }
+    } catch (error) {
+        console.error('Error de conexión:', error);
+        alert('Error de conexión con el servidor. Inténtelo más tarde.');
+    }
+}
+
+async function cargarDetallesProducto(id, contenedor, mensaje) {
+    try {
+        // 2. Llamar al script PHP con el ID
+        const response = await fetch(`obtener_producto_detalles.php?id=${id}`);
+        const data = await response.json();
+
+        if (data.success && data.data) {
+            const producto = data.data;
+
+            // 3. Ocultar mensaje de carga y mostrar el detalle
+            mensaje.style.display = 'none';
+            contenedor.style.display = 'flex'; // Usar 'flex' como tu CSS sugiere para .post-product-container
+
+            document.getElementById('producto-titulo').textContent = producto.TITULO;
+            document.getElementById('producto-precio').textContent = `$${parseFloat(producto.PRECIO).toFixed(2)}`; 
+            document.getElementById('producto-descripcion').textContent = producto.DESCRIPCION;
+            document.getElementById('producto-vendedor').textContent = producto.nombre_vendedor;
+
+            const mediaContainer = document.getElementById('media-container-full');
+
+            if (producto.tipo === 'imagen') {
+                mediaContainer.innerHTML = `<img src="${producto.url_contenido}" alt="${producto.TITULO}" onerror="this.src='imagenes/blank.jpg';">`;
+            } else if (producto.tipo === 'video') {
+                mediaContainer.innerHTML = `<video controls style="width: 100%; height: 100%; object-fit: contain;" src="${producto.url_contenido}">Tu navegador no soporta el tag de video.</video>`;
+            } else {
+                mediaContainer.innerHTML = `<img src="imagenes/blank.jpg" alt="Contenido no disponible">`;
+            }
+
+        } else {
+            mensaje.textContent = data.message || 'El producto solicitado no existe.';
+            contenedor.style.display = 'none';
+        }
+    } catch (error) {
+        console.error('Error al obtener los detalles del producto:', error);
+        mensaje.textContent = 'Error de conexión. No se pudieron obtener los detalles del producto.';
+        contenedor.style.display = 'none';
+    }
+}
 </script>
 
 </html>

@@ -150,6 +150,65 @@
       background-color: #d21919;
     }
 
+.tienda-main {
+    width: 90%;
+    max-width: 1200px;
+    margin: 30px auto;
+}
+.productos-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px;
+}
+.producto-card {
+    background-color: #ffffff;
+    border: 1px solid #e6e6e6;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s;
+    text-align: left;
+}
+.producto-card:hover {
+    transform: translateY(-5px);
+}
+.producto-imagen {
+    width: 100%;
+    height: 200px; /* Altura fija para uniformidad */
+    object-fit: cover; /* Asegura que la imagen cubra el área sin distorsionarse */
+}
+.producto-info {
+    padding: 15px;
+}
+.producto-titulo {
+    font-size: 1.5rem;
+    margin-top: 0;
+    margin-bottom: 5px;
+    color: #b00000;
+}
+.producto-precio {
+    font-size: 1.2rem;
+    color: #4CAF50;
+    margin: 10px 0;
+}
+.producto-vendedor {
+    font-size: 0.9rem;
+    color: #666;
+    margin-bottom: 10px;
+}
+.btn-comprar {
+    display: block;
+    width: 92%;
+    padding: 10px;
+    background-color: #1e3a8a; 
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background-color 0.3s;
+}
+
     /* =======================
        Footer
        ======================= */
@@ -182,10 +241,12 @@
           <li><a href="index.html">Inicio</a></li>
           <li id="perfil-link"><a href="perfil.html">Perfil</a></li>
           <li><a href="comunidad.html">Comunidad</a></li>
-          <li><a href="NuevoPost.html">Nuevo Producto</a></li>
+          <li><a href="NuevoPost.html?origen=producto">Nuevo Producto</a></li>
           <li><div class="search-bar">
-                <input type="text" placeholder="Buscar productos">
-                <button type="submit">Buscar</button>
+                <form action="tienda.html" method="GET" class="search-form">
+                <input type="text" name="q" placeholder="Buscar productos..." required>
+                <button type="submit"><i class="fas fa-search"></i></button>
+                </form>
           </div></li>
           <li><a href="carrito.html">Carrito</a></li>
         </ul>
@@ -194,42 +255,11 @@
   </header>
 
   <!-- CONTENIDO DE LA TIENDA -->
-  <div class="contenedor">
-    <h2>Artículos Disponibles</h2>
-
-    <div class="productos">
-      <!-- Producto México -->
-      <div class="producto"><a href="PostProducto.html">
-        <img src="https://www.innovasport.com/medias/jersey-adidas-seleccion-nacional-de-mexico-local-mundial-2022-is-HE8847-2.jpg?context=bWFzdGVyfGltYWdlc3wxNTU5NjN8aW1hZ2UvanBlZ3xhVzFoWjJWekwyaGhOUzlvWmpndk1URXdOek15TWpBNE1EUTJNemd1YW5CbnxjMjA1NTkyODdmYmJlZWUwMWM3ODQ5NzkwNTA0Njc1MTg4YTE2MmZjZGZhNWJkN2IwMzAwMmM4ZDMwYWM4YTg1" alt="Camiseta México">
-        <h3>Camiseta México - Local Mundial 2022</h3>
-        <p>¡Lleva los colores de la selección mexicana al mundial! Camiseta oficial Adidas de la selección mexicana.</p>
-        <p class="precio">$1,299.99 MXN</p>
-        <button>Añadir al carrito</button>
-        <button>Comprar Ahora</button>
-      </a></div>
-
-      <!-- Producto Argentina -->
-      <div class="producto"><a href="PostProducto.html">
-        <img src="https://static.wixstatic.com/media/bc4d4f_14ebe2e022bf480a84ed838fad571ab8~mv2.png/v1/fill/w_568,h_568,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/bc4d4f_14ebe2e022bf480a84ed838fad571ab8~mv2.png" alt="Camiseta Argentina">
-        <h3>Camiseta Argentina - Local Mundial 2022</h3>
-        <p>La camiseta oficial de la selección argentina, perfecta para apoyar a tu equipo en el mundial.</p>
-        <p class="precio">$1,499.99 MXN</p>
-        <button>Añadir al carrito</button>
-        <button>Comprar Ahora</button>
-      </a></div>
-
-      <!-- Producto Brasil -->
-      <div class="producto"><a href="PostProducto.html">
-        <img src="https://m.media-amazon.com/images/I/31HKowf9IOL._SY1000_.jpg" alt="Camiseta Brasil">
-        <h3>Camiseta Brasil - Local Mundial 2022</h3>
-        <p>La camiseta de la selección brasileña, ideal para vivir la pasión del fútbol en el mundial.</p>
-        <p class="precio">$1,399.99 MXN</p>
-        <button>Añadir al carrito</button>
-        <button>Comprar Ahora</button>
-      </a></div>
-
+  <main class="tienda-main">
+    <div class="productos-grid" id="productos-contenedor">
+        <p>Cargando productos...</p>
     </div>
-  </div>
+  </main>
 
   <!-- FOOTER -->
   <footer>
@@ -273,19 +303,70 @@
 
   <script>
     document.addEventListener("DOMContentLoaded", () => {
-      const perfilLink = document.getElementById('perfil-link').querySelector('a');
-      const nombreUsuario = localStorage.getItem('usuarioNombre');
+    // 1. Obtener el término de búsqueda de la URL
+    const params = new URLSearchParams(window.location.search);
+    const terminoBusqueda = params.get('q');
+    
+    // 2. Llamar a cargarProductos con el término de búsqueda (puede ser vacío)
+    cargarProductos(terminoBusqueda);
+    
+    if (terminoBusqueda) {
+        const tituloContenedor = document.getElementById('titulo-principal') || document.querySelector('h2');
+        if (tituloContenedor) {
+            tituloContenedor.textContent = `Resultados para: "${terminoBusqueda}"`;
+        }
+    }
+});
 
-      if (nombreUsuario && perfilLink) {
-        // Muestra el nombre si existe en localStorage
-        perfilLink.textContent = nombreUsuario.split(' ')[0]; // Muestra solo el primer nombre
-        // Puedes cambiar el 'href' para que vaya al perfil correcto o dejarlo igual
-      } else if (perfilLink) {
-        // Si no hay nombre, se asume que no ha iniciado sesión, podrías redirigir o mostrar 'Iniciar Sesión'
-        perfilLink.textContent = 'Iniciar Sesión';
-        perfilLink.href = 'index.html'; // Lo enviamos de vuelta al inicio
-      }
-    });
+    async function cargarProductos(terminoBusqueda = '') {
+    const contenedor = document.getElementById('productos-contenedor');
+    contenedor.innerHTML = '<p>Cargando productos...</p>';
+
+    let url = 'obtener_productos.php';
+    if (terminoBusqueda) {
+        url += `?q=${encodeURIComponent(terminoBusqueda)}`;
+    }
+
+    try {
+        // 3. La llamada AJAX/Fetch usa la URL con o sin el parámetro 'q'
+        const response = await fetch(url);
+        const data = await response.json();
+
+        if (data.success && data.data.length > 0) {
+            contenedor.innerHTML = ''; 
+            
+            // 4. Recorrer los productos y crear las cards
+            data.data.forEach(producto => {
+                const card = crearCardProducto(producto);
+                contenedor.appendChild(card);
+            });
+        } else {
+            // Mostrar mensaje si no hay productos
+            contenedor.innerHTML = `<p>${data.message || 'No se pudieron cargar los productos.'}</p>`;
+        }
+    } catch (error) {
+        console.error('Error al obtener productos:', error);
+        contenedor.innerHTML = '<p>Error de conexión con el servidor. Inténtelo más tarde.</p>';
+    }
+}
+
+function crearCardProducto(producto) {
+    const card = document.createElement('div');
+    card.className = 'producto-card';
+
+    const detalleUrl = `PostProducto.html?id=${producto.ID_PRODUCTO}`;
+
+    card.innerHTML = `
+        <img src="${producto.url_contenido}" alt="${producto.TITULO}" onerror="this.src='imagenes/blank.jpg';" class="producto-imagen">
+        <div class="producto-info">
+            <h3 class="producto-titulo">${producto.TITULO}</h3>
+            <p class="producto-precio"><strong>Precio:</strong> $${parseFloat(producto.PRECIO).toFixed(2)}</p>
+            <p class="producto-vendedor">Publicado por: <strong>${producto.nombre_vendedor}</strong></p>
+            <a href="${detalleUrl}" class="btn-comprar">Ver Producto</a> 
+        </div>
+    `;
+    return card;
+}
   </script>
 
 </body>
