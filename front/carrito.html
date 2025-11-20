@@ -419,11 +419,49 @@ function crearItemCarrito(item, subtotal) {
         contenedor.style.display = 'block';
     }
 
-    // Nueva función para redirigir al checkout
-    function procederPago(total) {
-        // Guardar el total en la sesión temporalmente
-        localStorage.setItem('totalPago', total);
-        window.location.href = 'pago_checkout.html';
+    // Función actualizada para procesar la compra en BD antes de redirigir
+    async function procederPago(total) {
+        const idUsuario = localStorage.getItem('usuarioId');
+
+        if (!idUsuario) {
+            alert("Error: No se pudo identificar al usuario.");
+            return;
+        }
+
+        const btn = document.querySelector('.btn-checkout');
+        btn.disabled = true;
+        btn.textContent = "Procesando...";
+
+        try {
+            const formData = new FormData();
+            formData.append('id_usuario', idUsuario);
+
+            // 1. Llamamos al backend para mover datos de Carrito a Compra/Detalle
+            const response = await fetch('procesar_compra.php', {
+                method: 'POST',
+                body: formData
+            });
+
+            const data = await response.json();
+
+            if (data.success) {
+                // 2. Si la BD se actualizó correctamente, guardamos el total para mostrarlo en la siguiente pág
+                localStorage.setItem('totalPago', data.total); // Usamos el total real del servidor
+                
+                // 3. Redirigimos a la página de éxito
+                window.location.href = 'pago_checkout.html';
+            } else {
+                alert('Error al procesar la compra: ' + data.message);
+                btn.disabled = false;
+                btn.textContent = "Proceder al Pago";
+            }
+
+        } catch (error) {
+            console.error("Error:", error);
+            alert("Error de conexión con el servidor.");
+            btn.disabled = false;
+            btn.textContent = "Proceder al Pago";
+        }
     }
 </script>
 </html>

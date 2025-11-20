@@ -172,6 +172,7 @@
 
             <input type="hidden" id="idMundial" name="idMundial" value="1">
             <input type="hidden" id="post-origen" name="post_origen" value="">
+            <input type="hidden" id="id-edicion" name="id_edicion" value="">
             <input type="hidden" id="id-usuario" name="id_usuario" value="">
             
             </div>
@@ -187,50 +188,74 @@
 </body>
     <script>
       document.addEventListener("DOMContentLoaded", () => {
-        // Lógica de visibilidad del campo de Precio
-        const urlParams = new URLSearchParams(window.location.search);
-        const origen = urlParams.get('origen'); 
-        
-        const campoPrecioDiv = document.getElementById('campo-precio');
-        const precioInput = document.getElementById('precio');
-        const postOrigenInput = document.getElementById('post-origen');
+    const urlParams = new URLSearchParams(window.location.search);
+    const origen = urlParams.get('origen'); 
+    const idEdicion = urlParams.get('id'); // Capturamos el ID si existe
 
-        // Lógica de visibilidad y campos requeridos
-        if (origen === 'producto') {
-            // Mostrar precio y hacerlo obligatorio
-            campoPrecioDiv.style.display = 'block'; 
-            precioInput.required = true;
-            precioInput.setAttribute('name', 'precio'); // Asegura que el nombre esté para envío
-            document.title = "Nuevo Producto";
-        } else if (origen === 'publicacion') {
-            // Ocultar precio, asegurar que no sea obligatorio, y QUITAR EL NAME
-            campoPrecioDiv.style.display = 'none'; // <-- Esto lo oculta
-            precioInput.required = false;
-            precioInput.value = ''; // Limpiar el valor por si acaso
-            precioInput.removeAttribute('name'); // <-- ESTO ES CLAVE: Impide que el campo se envíe
-            document.title = "Nueva Publicación";
-        } else {
-            // Si el origen no está claro
-            alert("Tipo de publicación no especificado. Serás redirigido a la comunidad.");
-            window.location.href = 'comunidad.html';
-            return;
-        }
+    const campoPrecioDiv = document.getElementById('campo-precio');
+    const precioInput = document.getElementById('precio');
+    const postOrigenInput = document.getElementById('post-origen');
+    const idEdicionInput = document.getElementById('id-edicion');
+    const tituloInput = document.getElementById('titulo');
+    const descInput = document.getElementById('descripcion');
 
-        // Asignar el origen al campo oculto
-        postOrigenInput.value = origen;
+    // ... (Lógica existente de origen producto/publicacion se mantiene igual) ...
+    if (origen === 'producto') {
+        campoPrecioDiv.style.display = 'block'; 
+        precioInput.required = true;
+        precioInput.setAttribute('name', 'precio');
+        document.title = idEdicion ? "Editar Producto" : "Nuevo Producto";
+    } else if (origen === 'publicacion') {
+        campoPrecioDiv.style.display = 'none';
+        precioInput.required = false;
+        precioInput.removeAttribute('name');
+        document.title = idEdicion ? "Editar Publicación" : "Nueva Publicación";
+    }
 
-        // Lógica para obtener el ID de usuario
-        const idUsuario = localStorage.getItem('usuarioId');
-        const idUsuarioInput = document.getElementById('id-usuario');
-        
-        if (idUsuario) {
-            idUsuarioInput.value = idUsuario;
-        } else {
-            // Si no hay ID, forzar redirección (sin login no se puede publicar)
-            alert("Necesitas iniciar sesión para crear una publicación.");
-            window.location.href = 'index.html';
-        }
-    });
+    postOrigenInput.value = origen;
+
+    // Lógica de Usuario (existente)
+    const idUsuario = localStorage.getItem('usuarioId');
+    if (idUsuario) {
+        document.getElementById('id-usuario').value = idUsuario;
+    } else {
+        alert("Necesitas iniciar sesión.");
+        window.location.href = 'index.html';
+        return;
+    }
+
+    // NUEVA LÓGICA: MODO EDICIÓN
+    if (idEdicion) {
+        idEdicionInput.value = idEdicion;
+        document.querySelector('h2').textContent = "Editar Contenido";
+        document.querySelector('button[type="submit"]').textContent = "Guardar Cambios";
+
+        // Determinar qué endpoint llamar para obtener los datos viejos
+        let endpoint = '';
+        if(origen === 'publicacion') endpoint = `obtener_detalle_post.php?id=${idEdicion}`;
+        if(origen === 'producto') endpoint = `obtener_producto_detalles.php?id=${idEdicion}`; // Asegúrate de tener este archivo o similar
+
+        fetch(endpoint)
+        .then(res => res.json())
+        .then(data => {
+            if(data.success) {
+                const item = data.data;
+                // Rellenar campos
+                tituloInput.value = item.titulo || item.TITULO;
+                descInput.value = item.descripcion || item.DESCRIPCION;
+                
+                if(origen === 'producto') {
+                    precioInput.value = item.precio || item.PRECIO;
+                }
+                // Nota: No podemos pre-rellenar los inputs type="file" por seguridad del navegador,
+                // el usuario tendrá que subir la foto de nuevo solo si quiere cambiarla.
+            } else {
+                alert("Error al cargar datos para editar.");
+            }
+        })
+        .catch(e => console.error(e));
+    }
+});
 
     const postForm = document.getElementById('post-form');
     if (postForm) {

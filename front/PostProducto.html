@@ -474,31 +474,69 @@ async function agregarProductoACarrito(id_producto, id_usuario) {
 
 async function cargarDetallesProducto(id, contenedor, mensaje) {
     try {
-        // 2. Llamar al script PHP con el ID
         const response = await fetch(`obtener_producto_detalles.php?id=${id}`);
         const data = await response.json();
 
         if (data.success && data.data) {
             const producto = data.data;
 
-            // 3. Ocultar mensaje de carga y mostrar el detalle
+            // 1. Mostrar contenedor
             mensaje.style.display = 'none';
-            contenedor.style.display = 'flex'; // Usar 'flex' como tu CSS sugiere para .post-product-container
+            contenedor.style.display = 'flex';
 
+            // 2. Rellenar datos básicos
             document.getElementById('producto-titulo').textContent = producto.TITULO;
             document.getElementById('producto-precio').textContent = `$${parseFloat(producto.PRECIO).toFixed(2)}`; 
             document.getElementById('producto-descripcion').textContent = producto.DESCRIPCION;
             document.getElementById('producto-vendedor').textContent = producto.nombre_vendedor;
 
+            // 3. Renderizar Multimedia
             const mediaContainer = document.getElementById('media-container-full');
-
             if (producto.tipo === 'imagen') {
                 mediaContainer.innerHTML = `<img src="${producto.url_contenido}" alt="${producto.TITULO}" onerror="this.src='imagenes/blank.jpg';">`;
             } else if (producto.tipo === 'video') {
-                mediaContainer.innerHTML = `<video controls style="width: 100%; height: 100%; object-fit: contain;" src="${producto.url_contenido}">Tu navegador no soporta el tag de video.</video>`;
+                mediaContainer.innerHTML = `<video controls style="width: 100%; height: 100%; object-fit: contain;" src="${producto.url_contenido}">Tu navegador no soporta video.</video>`;
             } else {
                 mediaContainer.innerHTML = `<img src="imagenes/blank.jpg" alt="Contenido no disponible">`;
             }
+
+            const currentUserId = localStorage.getItem('usuarioId');
+            const ownerId = producto.ID_USUARIO || producto.id_usuario;
+
+            const botonExistente = document.getElementById('btn-editar-dinamico');
+            if(botonExistente) botonExistente.remove();
+
+            if (currentUserId && parseInt(currentUserId) === parseInt(ownerId)) {
+                const btnEditar = document.createElement('a');
+                btnEditar.id = 'btn-editar-dinamico';
+                btnEditar.href = `NuevoPost.html?origen=producto&id=${producto.ID_PRODUCTO}`;
+                btnEditar.innerHTML = '<i class="fas fa-edit"></i> Editar Producto';
+                
+                // Aplicamos estilos para que se vea bien junto al de Comprar
+                btnEditar.style.cssText = `
+                    display: block;
+                    width: 100%; /* Ocupa el ancho disponible en la columna de detalles */
+                    padding: 15px;
+                    background-color: #555; /* Un gris oscuro para diferenciarlo de Comprar */
+                    color: white;
+                    text-align: center;
+                    border-radius: 6px;
+                    text-decoration: none;
+                    font-size: 1.2rem;
+                    margin-top: 10px;
+                    cursor: pointer;
+                    box-sizing: border-box; /* Para que el padding no rompa el ancho */
+                `;
+
+                const btnComprar = document.querySelector('.btn-comprar');
+                if(btnComprar) {
+                    btnComprar.parentNode.insertBefore(btnEditar, btnComprar.nextSibling);
+                } else {
+                    // Si no encuentra el botón comprar, lo pone al final del div
+                    document.querySelector('.product-details').appendChild(btnEditar);
+                }
+            }
+            
 
         } else {
             mensaje.textContent = data.message || 'El producto solicitado no existe.';
@@ -506,12 +544,11 @@ async function cargarDetallesProducto(id, contenedor, mensaje) {
         }
     } catch (error) {
         console.error('Error al obtener los detalles del producto:', error);
-        mensaje.textContent = 'Error de conexión. No se pudieron obtener los detalles del producto.';
+        mensaje.textContent = 'Error de conexión. No se pudieron obtener los detalles.';
         contenedor.style.display = 'none';
     }
 }
 
-// Función extra para rellenar "Otros Posts" usando tu script existente
     async function cargarOtrosPosts() {
         try {
             const response = await fetch('obtener_publicaciones.php'); // Reusamos el script de la comunidad

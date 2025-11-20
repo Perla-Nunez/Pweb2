@@ -181,51 +181,80 @@
     }
 
     function renderizarPost(post) {
-        const contenedor = document.getElementById('detalle-contenedor');
+    const contenedor = document.getElementById('detalle-contenedor');
         
-        // Lógica Multimedia (Imagen vs Video)
         let mediaHTML = '';
-        if (post.tipo === 'video') {
-            mediaHTML = `
-                <video controls autoplay muted>
-                    <source src="${post.url_contenido}" type="video/mp4">
-                    Tu navegador no soporta videos.
-                </video>`;
-        } else {
-            mediaHTML = `<img src="${post.url_contenido}" alt="${post.titulo}" onerror="this.src='imagenes/blank.jpg'">`;
-        }
+
+// Verificamos si la URL es válida y no es el texto placeholder
+const tieneMedia = post.url_contenido && 
+                   post.url_contenido !== 'no_media_url' && 
+                   post.url_contenido.trim() !== '';
+
+if (post.tipo === 'video' && tieneMedia) {
+    mediaHTML = `
+        <video controls autoplay muted>
+            <source src="${post.url_contenido}" type="video/mp4">
+            Tu navegador no soporta videos.
+        </video>`;
+} else if (tieneMedia) {
+    // Es imagen y existe
+    mediaHTML = `<img src="${post.url_contenido}" alt="${post.titulo}" onerror="this.src='imagenes/blank.jpg'">`;
+} else {
+    // NO hay media o es "no_media_url" -> Ponemos una imagen por defecto o nada
+    mediaHTML = `<img src="imagenes/blank.jpg" alt="Sin imagen" style="opacity:0.5;">`;
+}
 
         const colorLike = post.ya_dio_like > 0 ? '#b00000' : ''; 
         const fecha = new Date(post.fecha_elaboracion).toLocaleDateString('es-ES', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
 
-        contenedor.innerHTML = `
-        <div class="post-detalle">
-            <div class="post-header">
-                <h2>${post.titulo}</h2>
-                <div class="post-meta">
-                    Por <strong>${post.autor}</strong> | ${fecha}
-                </div>
-            </div>
+        
+        const currentUserId = localStorage.getItem('usuarioId');
+        console.log("Mi ID:", currentUserId);
+        console.log("ID Dueño del Post:", post.id_usuario);
+        
+        let botonEditar = '';
+        const idDueño = post.id_usuario || post.ID_USUARIO;
+        // Verificamos si el usuario actual es el dueño del post
+        // Nota: Asegúrate de que tu consulta SQL en obtener_detalle_post.php traiga 'id_usuario'
+        if (currentUserId && parseInt(currentUserId) === parseInt(idDueño)) {
+         botonEditar = `
+            <a href="NuevoPost.html?origen=publicacion&id=${post.id_publicacion}" class="btn-accion" style="text-decoration:none; color: #1e3a8a; border-color: #1e3a8a;">
+                <i class="fas fa-edit"></i> Editar
+            </a>
+            `;
+        }
 
-            <div class="media-display">
-                ${mediaHTML}
-            </div>
+contenedor.innerHTML = `
+<div class="post-detalle">
+    <div class="post-header">
+        <h2>${post.titulo}</h2>
+        <div class="post-meta">
+            Por <strong>${post.autor}</strong> | ${fecha}
+        </div>
+    </div>
 
-            <div class="descripcion-texto">
-                ${post.descripcion}
-            </div>
+    <div class="media-display">
+        ${mediaHTML}
+    </div>
 
-            <div class="acciones">
+    <div class="descripcion-texto">
+        ${post.descripcion}
+    </div>
+
+    <div class="acciones">
         <button class="btn-accion" id="btn-like" onclick="toggleLike(${post.id_publicacion})" style="color: ${colorLike}">
             <i class="fas fa-thumbs-up" style="color: ${colorLike}"></i> 
             <span id="likes-count">${post.total_likes || 0}</span> Me gusta
         </button>
-                <button class="btn-accion">
-                    <i class="fas fa-share-alt"></i> Compartir
-                </button>
-            </div>
-        </div>
-        `;
+        
+        ${botonEditar}
+        
+        <button class="btn-accion">
+            <i class="fas fa-share-alt"></i> Compartir
+        </button>
+    </div>
+</div>
+`;
     }
 
     async function cargarOtrosPosts() {

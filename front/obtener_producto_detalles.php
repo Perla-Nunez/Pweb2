@@ -18,7 +18,8 @@ if ($id_producto <= 0) {
 
 // 2. Consulta JOIN para obtener producto y nombre del usuario (usando PreparedStatement)
 $sql = "SELECT 
-            p.ID_PRODUCTO, 
+            p.ID_PRODUCTO,
+            p.ID_USUARIO, 
             p.TITULO, 
             p.PRECIO, 
             p.DESCRIPCION, 
