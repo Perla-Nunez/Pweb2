@@ -8,171 +8,61 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
   <style>
-    body {
-      font-family: 'Oswald', sans-serif;
-      background-color: #f5f5f5;
-      margin: 0;
-      padding: 0;
+    /* --- TUS ESTILOS ORIGINALES --- */
+    body { font-family: 'Oswald', sans-serif; background-color: #f5f5f5; margin: 0; padding: 0; }
+    header { background-color: #b00000; padding: 10px 0; text-align: center; color: white; }
+    header h1 { margin: 0; font-size: 2.5rem; }
+    
+    nav { background: var(--nav); border-bottom: 1px solid var(--border); }
+    .nav-wrap { width: 90%; max-width: 1200px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; }
+    .navbar { list-style: none; display: flex; gap: 20px; margin: 0; padding: 10px 0; flex: 1; justify-content: space-between; }
+    .navbar a { text-decoration: none; color: #ffffff; font-weight: 900; font-size: larger; }
+    .search-bar input { padding: 10px; width: 200px; border-radius: 4px; border: none; }
+    .navbar button { background-color: #f8b2b2; border: none; padding: 10px; cursor: pointer; border-radius: 5px; }
+    
+    .contenedor { width: 80%; margin: 20px auto; text-align: center; }
+    h2 { font-size: 2rem; margin-bottom: 20px; color: #1e3a8a; }
+
+    /* Grid para posts */
+    .productos { 
+        display: grid; 
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); 
+        gap: 20px; 
     }
 
-    header {
-      background-color: #b00000;
-      padding: 10px 0;
-      text-align: center;
-      color: white;
+    /* Estilo de la tarjeta (reutilizando tu clase .producto) */
+    .producto { 
+        background-color: #ffffff; border-radius: 10px; 
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); padding: 20px; text-align: left; 
+        display: flex; flex-direction: column;
+    }
+    
+    .producto h3 { font-size: 1.5rem; margin-top: 10px; color: #b00000; }
+    .producto p { font-size: 1.1rem; color: #444; }
+    .producto small { color: #666; font-size: 0.9rem; display: block; margin-bottom: 10px;}
+
+    /* Manejo de Imágenes y Videos */
+    .media-content {
+        width: 100%;
+        height: 250px;
+        object-fit: cover;
+        border-radius: 10px;
+        margin-bottom: 10px;
+        background-color: #eee;
     }
 
-    header h1 {
-      margin: 0;
-      font-size: 2.5rem;
-    }
+    .interaccion-post { margin-top: auto; padding-top: 10px; border-top: 1px solid #eee; }
+    .interaccion-post button { background: none; border: none; font-size: 1.2rem; cursor: pointer; color: #555; margin-right: 5px;}
+    .interaccion-post button:hover { color: #b00000; }
 
-    nav {
-      background: var(--nav);
-      border-bottom: 1px solid var(--border);
-      transition: background .3s, border-color .3s;
-    }
-    .nav-wrap {
-      width: 90%; max-width: 1200px; margin: 0 auto;
-      display: flex; align-items: center; gap: 16px;
-      justify-content: space-between;
-    }
-
-    .navbar {
-      list-style: none;
-      display: flex; gap: 20px;
-      margin: 0; padding: 10px 0;
-      flex: 1; /* empuja el botón a la derecha */
-      justify-content: space-between;
-    }
-    .navbar a {
-      text-decoration: none;
-      color: var(--text);
-      font-weight: 900;
-      font-size: larger;
-      transition: color .2s;
-    }
-    .navbar a:hover { color: var(--btn-hover); }
-
-    .search-bar input {
-    padding: 10px;
-    width: 200px;
-    border-radius: 4px;
-    border: none;
-    }
-
-    .navbar button {
-      background-color: #f8b2b2;
-      color: rgb(0, 0, 0);
-      border: none;
-      padding: 10px;
-      
-      font-size: 1rem;
-      cursor: pointer;
-      border-radius: 5px;
-      transition: background-color 0.3s;
-    }
-
-    .navbar button:hover {
-      background-color: #ffffff;
-      color: rgb(0, 0, 0);
-    }
-
-    .contenedor {
-      width: 80%;
-      margin: 20px auto;
-      text-align: center;
-    }
-
-    h2 {
-      font-size: 2rem;
-      margin-bottom: 20px;
-      color: #1e3a8a;
-    }
-
-    .productos {
-      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-      gap: 20px;
-    }
-
-    .producto {
-      background-color: #ffffff;
-      border-radius: 10px;
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-      padding: 20px;
-      text-align: left;
-    }
-
-    .producto a {
-      text-decoration: none;
-      color: var(--text);
-      font-weight: 900;
-      font-size: larger;
-      transition: color .2s;
-    }
-
-    .productos img {
-      max-width: 25%;
-      border-radius: 10px;
-    }
-
-    .producto h3 {
-      font-size: 1.5rem;
-      margin-top: 10px;
-    }
-
-    .producto p {
-      font-size: 1.2rem;
-      color: #444;
-    }
-
-    .producto .precio {
-      font-size: 1.5rem;
-      font-weight: bold;
-      color: #b00000;
-      margin-top: 10px;
-    }
-
-    .producto button {
-      background-color: #b00000;
-      color: white;
-      border: none;
-      padding: 10px;
-      margin-top: 15px;
-      font-size: 1.2rem;
-      cursor: pointer;
-      border-radius: 5px;
-      transition: background-color 0.3s;
-    }
-
-    .producto button:hover {
-      background-color: #d21919;
-    }
-
-    /* =======================
-       Footer
-       ======================= */
-    footer {
-      background: var(--nav);
-      color: var(--text);
-      transition: background .3s, color .3s;
-      padding: 30px 20px;
-      border-top: 1px solid var(--border);
-    }
-    .footer-contenido {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 20px;
-    }
-    .redes-sociales a { color: var(--text); margin-right: 10px; font-size: 20px; }
-    .redes-sociales a:hover { color: var(--btn-hover); }
-    .copyright { text-align: center; margin-top: 16px; opacity: .75; font-size: .9rem; }
-
+    /* Footer */
+    footer { background: #eee; padding: 30px 20px; margin-top: 40px;}
+    .footer-contenido { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; }
+    .copyright { text-align: center; margin-top: 20px; }
   </style>
 </head>
 <body>
 
-  <!-- HEADER -->
   <header>
     <h1>Comunidad MundialFan</h1>
     <nav>
@@ -182,71 +72,22 @@
           <li id="perfil-link"><a href="perfil.html">Perfil</a></li>
           <li><a href="tienda.html">Tienda</a></li>
           <li><a href="NuevoPost.html?origen=publicacion">Nuevo Post</a></li>
-          <li><div class="search-bar">
-                <input type="text" placeholder="Buscar Post">
-                <button type="submit">Buscar</button>
-          </div></li>
+          <li>
+            <div class="search-bar">
+                <input type="text" id="search-input" placeholder="Buscar Post...">
+                <button onclick="buscarPosts()">Buscar</button>
+            </div>
+          </li>
         </ul>
       </div>
     </nav>
   </header>
 
-  <!-- CONTENIDO DE LA COMUNIDAD -->
   <div class="contenedor">
-    <h2>Nuevos Posts</h2>
+    <h2 id="titulo-seccion">Últimas Publicaciones</h2>
 
-    <div class="productos">
-    <div class="producto"><a href="Post.html">
-    <h3>Muy emocionado por el Mundial!</h3>
-    <p>¡Lleva los colores de la selección mexicana al mundial! Camiseta oficial Adidas de la selección mexicana.</p>
-    <img src="imagenes/Mascota.jpg" alt="Camiseta México">
-    </a>
-    <div class="interaccion-post" data-post-id="1"> <button class="like-btn">
-        <i class="fas fa-thumbs-up"></i>
-    </button>
-    <span class="like-count">0</span>
-
-    <button class="dislike-btn">
-        <i class="fas fa-thumbs-down"></i>
-    </button>
-    <span class="dislike-count">0</span>
-    </div>
-    </div><br>
-
-    <div class="producto"><a href="Post.html">
-    <h3>Quien para un FIFA?</h3>
-    <p>¡Lleva los colores de la selección mexicana al mundial! Camiseta oficial Adidas de la selección mexicana.</p>
-    <img src="imagenes/balon.png" alt="Camiseta México">
-    </a>
-    <div class="interaccion-post" data-post-id="1"> <button class="like-btn">
-        <i class="fas fa-thumbs-up"></i>
-    </button>
-    <span class="like-count">0</span>
-
-    <button class="dislike-btn">
-        <i class="fas fa-thumbs-down"></i>
-    </button>
-    <span class="dislike-count">0</span>
-    </div>
-    </div><br>
-
-    <div class="producto"><a href="Post.html">
-    <h3>Blue Lock!</h3>
-    <p>¡Lleva los colores de la selección mexicana al mundial! Camiseta oficial Adidas de la selección mexicana.</p>
-    <img src="imagenes/Mundi.jpg" alt="Camiseta México">
-    </a>
-    <div class="interaccion-post" data-post-id="1"> <button class="like-btn">
-        <i class="fas fa-thumbs-up"></i>
-    </button>
-    <span class="like-count">0</span>
-
-    <button class="dislike-btn">
-        <i class="fas fa-thumbs-down"></i>
-    </button>
-    <span class="dislike-count">0</span>
-    </div>
-    </div><br>
-
+    <div class="productos" id="lista-publicaciones">
+        <p>Cargando publicaciones...</p>
     </div>
   </div>
 
@@ -291,25 +132,107 @@
   </footer>
 
   <script>
+    // 1. Cargar publicaciones al iniciar
     document.addEventListener("DOMContentLoaded", () => {
-      const perfilLinkElement = document.getElementById('perfil-link');
-      if (!perfilLinkElement) return; 
-
-      const perfilAnchor = perfilLinkElement.querySelector('a');
-      const nombreUsuario = localStorage.getItem('usuarioNombre');
-      const idUsuario = localStorage.getItem('usuarioId'); 
-
-      if (nombreUsuario && perfilAnchor) {
-        perfilAnchor.textContent = nombreUsuario.split(' ')[0];
-        // Enlace al perfil si está logueado
-        perfilAnchor.href = 'perfil.html'; 
-      } else if (perfilAnchor) {
-        // Si no hay sesión, muestra 'Iniciar Sesión' y redirige a index
-        perfilAnchor.textContent = 'Iniciar Sesión';
-        perfilAnchor.href = 'index.html'; 
-      }
+        cargarPublicaciones();
+        verificarSesion();
     });
-</script>
+
+    function verificarSesion() {
+        const perfilAnchor = document.querySelector('#perfil-link a');
+        const nombreUsuario = localStorage.getItem('usuarioNombre');
+        if (nombreUsuario && perfilAnchor) {
+            perfilAnchor.textContent = nombreUsuario.split(' ')[0];
+            perfilAnchor.href = 'perfil.html'; 
+        } else if (perfilAnchor) {
+            perfilAnchor.textContent = 'Iniciar Sesión';
+            perfilAnchor.href = 'index.html'; 
+        }
+    }
+
+    // 2. Función para Buscar
+    function buscarPosts() {
+        const query = document.getElementById('search-input').value;
+        cargarPublicaciones(query);
+        document.getElementById('titulo-seccion').innerText = query ? `Resultados para: "${query}"` : "Últimas Publicaciones";
+    }
+
+    // 3. Función Principal: Obtener datos y generar HTML
+    async function cargarPublicaciones(termino = '') {
+        const contenedor = document.getElementById('lista-publicaciones');
+        contenedor.innerHTML = '<p>Actualizando feed...</p>';
+
+        let url = 'obtener_publicaciones.php';
+        if (termino) {
+            url += `?q=${encodeURIComponent(termino)}`;
+        }
+
+        try {
+            const response = await fetch(url);
+            const data = await response.json();
+
+            if (data.success && data.data.length > 0) {
+                contenedor.innerHTML = ''; // Limpiar mensaje de carga
+                
+                data.data.forEach(post => {
+                    const card = crearTarjetaPost(post);
+                    contenedor.appendChild(card);
+                });
+            } else {
+                contenedor.innerHTML = '<p>No hay publicaciones disponibles.</p>';
+            }
+        } catch (error) {
+            console.error(error);
+            contenedor.innerHTML = '<p>Error al cargar el contenido.</p>';
+        }
+    }
+
+    // 4. Crear el HTML de cada tarjeta
+    function crearTarjetaPost(post) {
+        const div = document.createElement('div');
+        div.className = 'producto';
+
+        // Determinar si mostrar IMAGEN o VIDEO usando el campo 'tipo'
+        let mediaHTML = '';
+        // Asegurarse de que la URL no sea null o 'no_media_url'
+        if (post.url_contenido && post.url_contenido !== 'no_media_url') {
+            if (post.tipo === 'video') {
+                mediaHTML = `
+                    <video class="media-content" controls>
+                        <source src="${post.url_contenido}" type="video/mp4">
+                        Tu navegador no soporta videos.
+                    </video>`;
+            } else {
+                // Asumimos imagen por defecto
+                mediaHTML = `<img src="${post.url_contenido}" alt="${post.titulo}" class="media-content" onerror="this.style.display='none'">`;
+            }
+        }
+
+        // Enlace al detalle (Post.html). Pasamos el ID por URL
+        const enlaceDetalle = `Post.html?id=${post.id_publicacion}`;
+
+        div.innerHTML = `
+            <a href="${enlaceDetalle}" style="text-decoration:none; color:inherit;">
+                <h3>${post.titulo}</h3>
+                <small>Publicado por: <strong>${post.autor}</strong> - ${new Date(post.fecha_elaboracion).toLocaleDateString()}</small>
+                <p>${post.descripcion}</p>
+                ${mediaHTML}
+            </a>
+            
+            <div class="interaccion-post">
+                <button onclick="darLike(${post.id_publicacion})"><i class="fas fa-thumbs-up"></i></button>
+                <span id="likes-${post.id_publicacion}">0</span>
+                
+                <button><i class="fas fa-comment"></i> Comentar</button>
+            </div>
+        `;
+        return div;
+    }
+
+    function darLike(id) {
+        alert("Funcionalidad de Like pendiente de backend para el ID: " + id);
+    }
+  </script>
 
 </body>
 </html>

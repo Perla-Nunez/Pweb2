@@ -3,272 +3,293 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Publicacion - MundialFan</title>
+  <title>Detalle Publicación - MundialFan</title>
   <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@200..700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
   <style>
-    body {
-      font-family: 'Oswald', sans-serif;
-      background-color: #f5f5f5;
-      margin: 0;
-      padding: 0;
-    }
+    /* --- Estilos Generales --- */
+    body { font-family: 'Oswald', sans-serif; background-color: #f5f5f5; margin: 0; padding: 0; }
+    header { background-color: #b00000; padding: 10px 0; text-align: center; color: white; }
+    header h1 { margin: 0; font-size: 2.5rem; }
+    
+    /* Navegación básica para poder volver */
+    .nav-bar { background: #b00000; padding: 10px; text-align: center; }
+    .nav-bar a { color: white; text-decoration: none; font-size: 1.2rem; margin: 0 15px; }
 
-    header {
-      background-color: #b00000;
-      padding: 10px 0;
-      text-align: center;
-      color: white;
-    }
+    .contenedor { width: 90%; max-width: 1000px; margin: 20px auto; }
 
-    header h1 {
-      margin: 0;
-      font-size: 2.5rem;
-    }
-
-    .contenedor {
-      width: 90%;
-      margin: 20px auto;
-    }
-
-    h2 {
-      font-size: 2rem;
-      margin-bottom: 20px;
-      color: #1e3a8a;
-    }
-
-    .productos {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
-      gap: 20px;
-    }
-
-    .productos input, textarea {
-    padding: 10px;
-    width: 40%;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    font-size: 1rem;
-    }
-
-    .producto {
+    /* Estilos del Post Principal */
+    .post-detalle {
       background-color: #ffffff;
       border-radius: 10px;
       box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-      padding: 20px;
+      padding: 30px;
+      margin-bottom: 40px;
     }
 
-    .producto img {
-      max-width: 100%;
-      border-radius: 10px;
-    }
+    .post-header h2 { color: #b00000; margin-top: 0; font-size: 2.5rem; }
+    .post-meta { color: #666; font-size: 1rem; margin-bottom: 20px; border-bottom: 1px solid #eee; padding-bottom: 10px; }
 
-    .producto h3 {
-      font-size: 1.5rem;
-      margin-top: 10px;
-    }
-
-    .producto label {
-      font-size: 1.5rem;
-      margin-top: 10px;
-    }
-
-    .producto p {
-      font-size: 1.2rem;
-      color: #444;
-    }
-
-    .producto .precio {
-      font-size: 1.5rem;
-      font-weight: bold;
-      color: #b00000;
-      margin-top: 10px;
-    }
-
-    input, textarea {
-    padding: 10px;
-    width: 80%;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    font-size: 1rem;
-    }
-
-    .producto button {
-      background-color: #b00000;
-      color: white;
-      border: none;
-      padding: 10px;
-      margin-top: 15px;
-      font-size: 1.2rem;
-      cursor: pointer;
-      border-radius: 5px;
-      transition: background-color 0.3s;
-    }
-
-    .producto button:hover {
-      background-color: #d21919;
-    }
-
-    
-    input[type="file"] {
-     padding: 10px;
-      font-size: 1rem;
-    }
-
-    .video-pre {
-      width: 245px;
-     height: 200px;
-    }
-
-    
-    .media-container {
-        position: relative;
+    /* Contenedor Multimedia */
+    .media-display {
         width: 100%;
-        padding-top: 56.25%; 
-        max-width: 560px; 
-        margin-bottom: 15px;
+        max-height: 600px;
+        background-color: #000;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        border-radius: 10px;
         overflow: hidden;
+        margin-bottom: 20px;
     }
-    .media-container img, .media-container video {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
+    .media-display img, .media-display video {
+        max-width: 100%;
+        max-height: 600px;
         object-fit: contain;
-        border-radius: 10px;
-        display: none;
-    }
-    .media-container .active {
-        display: block;
-    }
-    .media-selector {
-        text-align: center;
-    }
-    .media-selector button {
-        background-color: #ddd;
-        border: none;
-        width: 12px;
-        height: 12px;
-        border-radius: 50%;
-        margin: 0 5px;
-        cursor: pointer;
-        padding: 0;
-    }
-    .media-selector button.active-dot {
-        background-color: #b00000;
     }
 
-    .media-containerS {
-        position: relative;
-        width: 100%;
-        padding-top: 56.25%; 
-        max-width: 560px; 
-        margin-bottom: 15px;
-        
+    .descripcion-texto { font-size: 1.3rem; line-height: 1.6; color: #333; margin-bottom: 20px; }
+
+    /* Botones de Acción */
+    .acciones { display: flex; gap: 15px; align-items: center; }
+    .btn-accion {
+        background: none; border: 1px solid #ccc; padding: 10px 20px;
+        border-radius: 20px; cursor: pointer; font-size: 1rem;
+        display: flex; align-items: center; gap: 8px; transition: all 0.3s;
     }
-    .media-containerS img, .media-containerS video {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        object-fit: contain;
-        border-radius: 10px;
-        
+    .btn-accion:hover { background-color: #f0f0f0; border-color: #b00000; color: #b00000; }
+    .btn-accion i { font-size: 1.2rem; }
+
+    /* Sección "Otros Posts" */
+    h3.seccion-titulo { color: #1e3a8a; font-size: 2rem; border-left: 5px solid #b00000; padding-left: 10px; margin-bottom: 20px; }
+    
+    .grid-otros {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      gap: 20px;
     }
+    .mini-card {
+        background: white; border-radius: 8px; padding: 10px;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1); text-align: center;
+    }
+    .mini-card img, .mini-card video { width: 100%; height: 150px; object-fit: cover; border-radius: 5px; }
+    .mini-card h4 { margin: 10px 0 5px; color: #333; }
+    .mini-card a { text-decoration: none; color: inherit; }
+    .mini-card a:hover h4 { color: #b00000; }
+
+    /* Footer */
+    footer { background: #eee; padding: 30px 20px; margin-top: 40px;}
+    .footer-contenido { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; }
+    .copyright { text-align: center; margin-top: 20px; }
 
   </style>
 </head>
 <body>
 
-  <!-- HEADER -->
   <header>
     <h1>MundialFan</h1>
   </header>
+  <div class="nav-bar">
+      <a href="comunidad.html"><i class="fas fa-arrow-left"></i> Volver a la Comunidad</a>
+      <a href="index.html">Inicio</a>
+  </div>
 
-  <!-- Post Actual -->
   <div class="contenedor">
 
-      <div class="producto">
-        <div class="productos">
-            <div class="form-group">
-                <h3>Publicacion de Prueba</h3>
-                <p>Descripcion:</p>
-                <p>Oigan, que emocion lo del Mundial, la verdad no puedo esperar a que llegue el proximo año par poder verlo.</p>
-                <button type="submit"><img src="imagenes/like.png" width="40" height="40" alt="Like"></button>
-                <button type="submit"><img src="imagenes/dislike.png" width="40" height="40" alt="Dislike"></button>
-            </div>
-
-            <div class="form-group">
-                <div class="media-container">
-                    <img src="imagenes/balon.png" alt="Media 1" class="active">
-                    <video controls src="imagenes/Rivarola.MP4"></video>
-                    <img src="imagenes/Mascota.jpg" alt="Media 3">
-                </div>
-                <div class="media-selector">
-                    <button class="active-dot" onclick="showMedia(0)"></button>
-                    <button onclick="showMedia(1)"></button>
-                    <button onclick="showMedia(2)"></button>
-                </div>
-            </div>
-        </div>
-        
+      <div id="detalle-contenedor">
+          <p style="text-align:center; font-size:1.5rem;">Cargando publicación...</p>
       </div>
 
-      <h2>Otros Posts</h2>
-
-      <div class="productos">
-        <div class="producto">
-            <div class="form-group">
-                <h3>Mundial 2026</h3>
-
-                <div class="media-containerS">
-                    <img src="imagenes/balon.png">
-                </div>
-                
-            </div>
-        </div>
-
-        <div class="producto">
-            <div class="form-group">
-                <h3>Futbolito Rapidito</h3>
-
-                <div class="media-containerS">
-                    <img src="imagenes/Mascota.jpg">
-                </div>
-                
-            </div>
-        </div>
-
-        <div class="producto">
-            <div class="form-group">
-                <h3>Metegol</h3>
-
-                <div class="media-containerS">
-                    <img src="imagenes/Mundi.jpg">
-                </div>
-                
-            </div>
-        </div>
-        
+      <br><br>
+      <h3 class="seccion-titulo">Más de la Comunidad</h3>
+      <div class="grid-otros" id="otros-posts-contenedor">
       </div>
 
+  </div>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="contenedor">
+      <div class="footer-contenido">
+        <div class="footer-seccion">
+          <h4>MundialFan</h4>
+          <p>Tu destino para todo lo relacionado con el Mundial de Fútbol. Ofrecemos las últimas noticias, estadísticas y contenido exclusivo.</p>
+        </div>
+        <div class="footer-seccion">
+          <h4>Enlaces Rápidos</h4>
+          <ul>
+            <li><a href="#">Inicio</a></li>
+            <li><a href="#">Calendario de Partidos</a></li>
+            <li><a href="#">Resultados</a></li>
+            <li><a href="#">Noticias</a></li>
+          </ul>
+        </div>
+        <div class="footer-seccion">
+          <h4>Contacto</h4>
+          <p><i class="fas fa-map-marker-alt"></i> Av. del Fútbol 123, Ciudad Deportiva</p>
+          <p><i class="fas fa-phone"></i> +1 234 567 8900</p>
+          <p><i class="fas fa-envelope"></i> info@mundialfan.com</p>
+        </div>
+        <div class="footer-seccion">
+          <h4>Síguenos</h4>
+          <p>No te pierdas ninguna actualización sobre el mundial</p>
+          <div class="redes-sociales">
+            <a href="#"><i class="fab fa-facebook-f"></i></a>
+            <a href="#"><i class="fab fa-twitter"></i></a>
+            <a href="#"><i class="fab fa-instagram"></i></a>
+            <a href="#"><i class="fab fa-youtube"></i></a>
+          </div>
+        </div>
+      </div>
+      <div class="copyright">
+        <p>&copy; 2023 MundialFan. Todos los derechos reservados.</p>
+      </div>
     </div>
-</body>
+  </footer>
+
 <script>
-    const mediaItems = document.querySelectorAll('.media-container img, .media-container video');
-    const mediaDots = document.querySelectorAll('.media-selector button');
+    document.addEventListener("DOMContentLoaded", () => {
+        // 1. Obtener el ID de la URL (ej: Post.html?id=5)
+        const params = new URLSearchParams(window.location.search);
+        const idPost = params.get('id');
 
-    function showMedia(index) {
-        
-        mediaItems.forEach(item => item.classList.remove('active'));
-        mediaDots.forEach(dot => dot.classList.remove('active-dot'));
-        
-        mediaItems[index].classList.add('active');
-        mediaDots[index].classList.add('active-dot');
+        if (!idPost) {
+            document.getElementById('detalle-contenedor').innerHTML = '<p>Error: No se especificó ninguna publicación.</p>';
+            return;
+        }
+
+        cargarDetalle(idPost);
+        cargarOtrosPosts();
+    });
+
+    // Función para cargar el post principal
+    async function cargarDetalle(id) {
+        try {
+            const response = await fetch(`obtener_detalle_post.php?id=${id}`);
+            const data = await response.json();
+
+            if (data.success) {
+                renderizarPost(data.data);
+            } else {
+                document.getElementById('detalle-contenedor').innerHTML = `<p>${data.message}</p>`;
+            }
+        } catch (error) {
+            console.error("Error:", error);
+            document.getElementById('detalle-contenedor').innerHTML = '<p>Error de conexión.</p>';
+        }
     }
-</script>
 
+    function renderizarPost(post) {
+        const contenedor = document.getElementById('detalle-contenedor');
+        
+        // Lógica Multimedia (Imagen vs Video)
+        let mediaHTML = '';
+        if (post.tipo === 'video') {
+            mediaHTML = `
+                <video controls autoplay muted>
+                    <source src="${post.url_contenido}" type="video/mp4">
+                    Tu navegador no soporta videos.
+                </video>`;
+        } else {
+            mediaHTML = `<img src="${post.url_contenido}" alt="${post.titulo}" onerror="this.src='imagenes/blank.jpg'">`;
+        }
+
+        const colorLike = post.ya_dio_like > 0 ? '#b00000' : ''; 
+        const fecha = new Date(post.fecha_elaboracion).toLocaleDateString('es-ES', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+
+        contenedor.innerHTML = `
+        <div class="post-detalle">
+            <div class="post-header">
+                <h2>${post.titulo}</h2>
+                <div class="post-meta">
+                    Por <strong>${post.autor}</strong> | ${fecha}
+                </div>
+            </div>
+
+            <div class="media-display">
+                ${mediaHTML}
+            </div>
+
+            <div class="descripcion-texto">
+                ${post.descripcion}
+            </div>
+
+            <div class="acciones">
+        <button class="btn-accion" id="btn-like" onclick="toggleLike(${post.id_publicacion})" style="color: ${colorLike}">
+            <i class="fas fa-thumbs-up" style="color: ${colorLike}"></i> 
+            <span id="likes-count">${post.total_likes || 0}</span> Me gusta
+        </button>
+                <button class="btn-accion">
+                    <i class="fas fa-share-alt"></i> Compartir
+                </button>
+            </div>
+        </div>
+        `;
+    }
+
+    async function cargarOtrosPosts() {
+        try {
+            const response = await fetch('obtener_publicaciones.php'); // Reusamos el script de la comunidad
+            const data = await response.json();
+
+            if (data.success && data.data.length > 0) {
+                const contenedor = document.getElementById('otros-posts-contenedor');
+                // Mostramos solo los primeros 4 posts
+                const otros = data.data.slice(0, 4); 
+
+                otros.forEach(p => {
+                    let mediaMini = p.tipo === 'video' 
+                        ? '<video src="'+p.url_contenido+'"></video>' 
+                        : '<img src="'+p.url_contenido+'">';
+                    
+                    contenedor.innerHTML += `
+                        <div class="mini-card">
+                            <a href="Post.html?id=${p.id_publicacion}">
+                                ${mediaMini}
+                                <h4>${p.titulo}</h4>
+                            </a>
+                        </div>
+                    `;
+                });
+            }
+        } catch (e) {
+            console.log("No se pudieron cargar sugerencias");
+        }
+    }
+
+    // Función para dar/quitar Like
+async function toggleLike(idPost) {
+    const idUsuarioPrueba = 1; 
+
+    try {
+        const response = await fetch('toggle_like.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: `id_publicacion=${idPost}&id_usuario=${idUsuarioPrueba}`
+        });
+        const data = await response.json();
+
+        if (data.success) {
+            // Actualiza el contador de likes y el estilo del botón si es necesario
+            document.getElementById('likes-count').textContent = data.total_likes;
+            
+            const icon = document.querySelector('#btn-like i');
+            if (data.action === 'liked') {
+                icon.style.color = '#b00000'; 
+            } else {
+                icon.style.color = '';
+            }
+        } else {
+            alert('Error al procesar el like: ' + data.message);
+        }
+    } catch (error) {
+        console.error("Error al hacer toggleLike:", error);
+        alert('Error de conexión con el servidor.');
+    }
+}
+</script>
+</body>
 </html>

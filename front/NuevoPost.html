@@ -141,7 +141,7 @@
         <form id="post-form" action="guardarPost.php" method="POST" enctype="multipart/form-data">
 
             <div class="form-group">
-                <label for="nombre">Título:</label><br>
+                <label for="titulo">Título:</label><br>
                 <input type="text" id="titulo" name="titulo" required placeholder="Ingrese el nombre del producto o servicio">
             </div>
 
@@ -161,24 +161,16 @@
 
             <br>
 
-            <div class="productos">
-                <div class="form-group">
+            <div class="form-group">
                 <label for="imagen">Subir imágenes (Opcional)</label><br>
-                <input type="file" id="imagen" name="imagen" accept="image/*" multiple onchange="previewImages(event)">
-
-                
-            </div>
+                <input type="file" id="imagen" name="imagen" accept="image/*" onchange="previewImages(event)">            </div>
 
             <div class="form-group">
                 <label for="videoUpload">Subir Video (Opcional)</label><br>
-                <input type="file" id="videoUpload" accept="video/*" onchange="previewVideo(event)">
+                <input type="file" id="videoUpload" name="video" accept="video/*" onchange="previewVideo(event)"> 
             </div>
 
-            <div class="form-group">
-                <div id="image-preview-container"></div>
-                <video id="video-preview" class="video-pre" controls style="display: none;"></video>
-            </div>
-
+            <input type="hidden" id="idMundial" name="idMundial" value="1">
             <input type="hidden" id="post-origen" name="post_origen" value="">
             <input type="hidden" id="id-usuario" name="id_usuario" value="">
             

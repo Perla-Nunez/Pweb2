@@ -15,6 +15,10 @@
       padding: 0;
     }
 
+    /* Navegación básica para poder volver */
+    .nav-bar { background: #b00000; padding: 10px; text-align: center; }
+    .nav-bar a { color: white; text-decoration: none; font-size: 1.2rem; margin: 0 15px; }
+
     header {
       background-color: #b00000;
       padding: 10px 0;
@@ -30,6 +34,10 @@
     .contenedor {
       width: 90%;
       margin: 20px auto;
+    }
+
+    .grid-otros{
+        padding: 15%;
     }
 
     h2 {
@@ -319,6 +327,11 @@
     }
 }
 
+/* Footer */
+    footer { background: #eee; padding: 30px 20px; margin-top: 40px;}
+    .footer-contenido { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; }
+    .copyright { text-align: center; margin-top: 20px; }
+
   </style>
 </head>
 <body>
@@ -326,6 +339,10 @@
   <!-- HEADER -->
   <header>
     <h1>MundialFan</h1>
+    <div class="nav-bar">
+    <a href="tienda.html"><i class="fas fa-arrow-left"></i> Volver a la Tienda</a>
+      <a href="index.html">Inicio</a>
+      </div>
   </header>
 
   <div class="post-product-container" id="producto-detalle" style="display: none;">
@@ -351,43 +368,51 @@
 
       <h2>Otros Productos</h2>
 
-      <div class="productos">
-        <div class="producto">
-            <div class="form-group">
-                <h3>Balon de Football - Puma Prestiege</h3>
-
-                <div class="media-containerS">
-                    <img src="imagenes/balon.png">
-                </div>
-                
-            </div>
+      <h3 class="seccion-titulo">Más de la Comunidad</h3>
+      <div class="grid-otros" id="otros-posts-contenedor">
         </div>
-
-        <div class="producto">
-            <div class="form-group">
-                <h3>LASUDRAA - Zapatos de Football</h3>
-
-                <div class="media-containerS">
-                    <img src="imagenes/Mascota.jpg">
-                </div>
-                
-            </div>
-        </div>
-
-        <div class="producto">
-            <div class="form-group">
-                <h3>Conjunto de Ropa Football</h3>
-
-                <div class="media-containerS">
-                    <img src="imagenes/Mundi.jpg">
-                </div>
-                
-            </div>
-        </div>
-        
-      </div>
 
     </div>
+
+    <!-- FOOTER -->
+  <footer>
+    <div class="contenedor">
+      <div class="footer-contenido">
+        <div class="footer-seccion">
+          <h4>MundialFan</h4>
+          <p>Tu destino para todo lo relacionado con el Mundial de Fútbol. Ofrecemos las últimas noticias, estadísticas y contenido exclusivo.</p>
+        </div>
+        <div class="footer-seccion">
+          <h4>Enlaces Rápidos</h4>
+          <ul>
+            <li><a href="#">Inicio</a></li>
+            <li><a href="#">Calendario de Partidos</a></li>
+            <li><a href="#">Resultados</a></li>
+            <li><a href="#">Noticias</a></li>
+          </ul>
+        </div>
+        <div class="footer-seccion">
+          <h4>Contacto</h4>
+          <p><i class="fas fa-map-marker-alt"></i> Av. del Fútbol 123, Ciudad Deportiva</p>
+          <p><i class="fas fa-phone"></i> +1 234 567 8900</p>
+          <p><i class="fas fa-envelope"></i> info@mundialfan.com</p>
+        </div>
+        <div class="footer-seccion">
+          <h4>Síguenos</h4>
+          <p>No te pierdas ninguna actualización sobre el mundial</p>
+          <div class="redes-sociales">
+            <a href="#"><i class="fab fa-facebook-f"></i></a>
+            <a href="#"><i class="fab fa-twitter"></i></a>
+            <a href="#"><i class="fab fa-instagram"></i></a>
+            <a href="#"><i class="fab fa-youtube"></i></a>
+          </div>
+        </div>
+      </div>
+      <div class="copyright">
+        <p>&copy; 2023 MundialFan. Todos los derechos reservados.</p>
+      </div>
+    </div>
+  </footer>
 </body>
 <script>
     document.addEventListener("DOMContentLoaded", () => {
@@ -485,6 +510,38 @@ async function cargarDetallesProducto(id, contenedor, mensaje) {
         contenedor.style.display = 'none';
     }
 }
+
+// Función extra para rellenar "Otros Posts" usando tu script existente
+    async function cargarOtrosPosts() {
+        try {
+            const response = await fetch('obtener_publicaciones.php'); // Reusamos el script de la comunidad
+            const data = await response.json();
+
+            if (data.success && data.data.length > 0) {
+                const contenedor = document.getElementById('otros-posts-contenedor');
+                // Mostramos solo los primeros 4 posts
+                const otros = data.data.slice(0, 4); 
+
+                otros.forEach(p => {
+                    // Determinar miniatura
+                    let mediaMini = p.tipo === 'video' 
+                        ? '<video src="'+p.url_contenido+'"></video>' 
+                        : '<img src="'+p.url_contenido+'">';
+                    
+                    contenedor.innerHTML += `
+                        <div class="mini-card">
+                            <a href="Post.html?id=${p.id_publicacion}">
+                                ${mediaMini}
+                                <h4>${p.titulo}</h4>
+                            </a>
+                        </div>
+                    `;
+                });
+            }
+        } catch (e) {
+            console.log("No se pudieron cargar sugerencias");
+        }
+    }
 </script>
 
 </html>
