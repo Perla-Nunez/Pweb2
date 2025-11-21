@@ -16,7 +16,7 @@ if (!isset($_SESSION['id_usuario']) || empty($_SESSION['id_usuario'])) {
 $id_usuario = $_SESSION['id_usuario'];
 
 // Consulta a la base de datos (SELECT)
-$stmt = $conn->prepare("SELECT nombre_completo, correo, nacionalidad, rol FROM usuario WHERE id_usuario = ? LIMIT 1");
+$stmt = $conn->prepare("SELECT nombre_completo, correo, nacionalidad, AVATAR_URL, rol FROM usuario WHERE id_usuario = ? LIMIT 1");
 
 if (!$stmt) {
     $response['message'] = 'Error en la preparación de la consulta: ' . $conn->error;
@@ -36,11 +36,12 @@ if ($resultado && $resultado->num_rows === 1) {
     $response['message'] = 'Datos de perfil obtenidos con éxito.';
     // Devolvemos solo los datos necesarios
     $response['data'] = [
-        'nombre_completo' => htmlspecialchars($usuario['nombre_completo']),
-        'correo' => htmlspecialchars($usuario['correo']),
-        'nacionalidad' => htmlspecialchars($usuario['nacionalidad']),
-        'rol' => htmlspecialchars($usuario['rol']),
-    ];
+    'nombre_completo' => htmlspecialchars($usuario['nombre_completo']),
+    'correo' => htmlspecialchars($usuario['correo']),
+    'nacionalidad' => htmlspecialchars($usuario['nacionalidad']),
+    'rol' => htmlspecialchars($usuario['rol']),
+    'AVATAR_URL' => $usuario['AVATAR_URL'] ? htmlspecialchars($usuario['AVATAR_URL']) : null
+];
 
 } else {
     $response['message'] = 'Usuario no encontrado en la base de datos.';

@@ -87,7 +87,7 @@
             
             <div class="profile-info">
                 <div class="profile-image">
-                    <img src='imagenes/default-profile.jpg' alt='Foto de perfil' height='150' width='150' style="border-radius: 50%;">
+                    <img id="avatarPerfil" src='imagenes/default-profile.jpg' alt='Foto de perfil' height='150' width='150' style="border-radius: 50%;">
                     <div class="edit-button">
                         <a href="Editarperfil.html"><button>Editar Perfil</button></a>
                     </div>
@@ -125,32 +125,32 @@
             <br>
 
             <br>
-<hr style="border: 0; border-top: 1px solid #ddd; margin: 30px 0;">
-<h2 class="header-fonts">Mis Estadísticas de Ventas</h2>
+        <hr style="border: 0; border-top: 1px solid #ddd; margin: 30px 0;">
+        <h2 class="header-fonts">Mis Estadísticas de Ventas</h2>
 
-<div class="stats-dashboard" style="display: flex; gap: 20px; flex-wrap: wrap; margin-bottom: 30px;">
-    <div class="stat-card-total" style="background: #1e3a8a; color: white; padding: 20px; border-radius: 10px; flex: 1; min-width: 250px; text-align: center;">
-        <h3 style="margin:0; font-size: 1.5rem;">Ganancias Totales</h3>
-        <p id="total-ingresos" style="font-size: 2.5rem; font-weight: bold; margin: 10px 0;">$0.00</p>
-        <i class="fas fa-wallet" style="font-size: 2rem; opacity: 0.5;"></i>
-    </div>
-</div>
+        <div class="stats-dashboard" style="display: flex; gap: 20px; flex-wrap: wrap; margin-bottom: 30px;">
+            <div class="stat-card-total" style="background: #1e3a8a; color: white; padding: 20px; border-radius: 10px; flex: 1; min-width: 250px; text-align: center;">
+                <h3 style="margin:0; font-size: 1.5rem;">Ganancias Totales</h3>
+                <p id="total-ingresos" style="font-size: 2.5rem; font-weight: bold; margin: 10px 0;">$0.00</p>
+                <i class="fas fa-wallet" style="font-size: 2rem; opacity: 0.5;"></i>
+            </div>
+        </div>
 
-<div class="table-responsive" style="overflow-x: auto; background: white; border-radius: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
-    <table style="width: 100%; border-collapse: collapse; min-width: 500px;">
-        <thead style="background: #b00000; color: white;">
-            <tr>
-                <th style="padding: 15px; text-align: left;">Producto</th>
-                <th style="padding: 15px; text-align: center;">Unidades Vendidas</th>
-                <th style="padding: 15px; text-align: right;">Ganancia Generada</th>
-            </tr>
-        </thead>
-        <tbody id="tabla-ventas-body">
-            <tr><td colspan="3" style="padding:20px; text-align:center;">Cargando estadísticas...</td></tr>
-        </tbody>
-    </table>
-</div>
-<br>
+        <div class="table-responsive" style="overflow-x: auto; background: white; border-radius: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
+            <table style="width: 100%; border-collapse: collapse; min-width: 500px;">
+                <thead style="background: #b00000; color: white;">
+                    <tr>
+                        <th style="padding: 15px; text-align: left;">Producto</th>
+                        <th style="padding: 15px; text-align: center;">Unidades Vendidas</th>
+                        <th style="padding: 15px; text-align: right;">Ganancia Generada</th>
+                    </tr>
+                </thead>
+                <tbody id="tabla-ventas-body">
+                    <tr><td colspan="3" style="padding:20px; text-align:center;">Cargando estadísticas...</td></tr>
+                </tbody>
+            </table>
+        </div>
+        <br>
 
         </div>
     </main>
@@ -202,24 +202,83 @@
         cargarEstadisticasVentas();
     });
 
-    function cargarDatosPerfil() {
-        fetch('obtenerPerfil.php', { method: 'POST' })
-        .then(r => r.json())
-        .then(data => {
-            if (data.success) {
-                document.getElementById('perfil-nombre').textContent = data.data.nombre_completo;
-                document.getElementById('perfil-correo').textContent = data.data.correo;
-                document.getElementById('perfil-nacionalidad').textContent = data.data.nacionalidad || 'N/A';
-                document.getElementById('perfil-rol').textContent = data.data.rol;
-                
-                const navLink = document.querySelector('#perfil-link a');
-                if(navLink) navLink.textContent = data.data.nombre_completo.split(' ')[0];
-            } else {
-                // Si no hay sesión, redirigir
-                window.location.href = 'index.html';
-            }
-        })
-        .catch(e => console.error("Error perfil:", e));
+
+    function probarImagen(url) {
+    return new Promise((resolve, reject) => {
+        if (!url) return reject(url);
+        const img = new Image();
+        img.onload = () => resolve(url);
+        img.onerror = () => reject(url);
+        img.src = url;
+    });
+    }
+
+    async function resolverAvatar(avatarPath) {
+    if (!avatarPath) return null;
+    const candidatos = [
+        avatarPath,
+        "../" + avatarPath,
+        "../../" + avatarPath,
+        "/" + avatarPath.replace(/^\/+/, ''),
+        window.location.origin + "/" + avatarPath.replace(/^\/+/, '')
+    ];
+    for (const url of candidatos) {
+        try {
+        await probarImagen(url);
+        console.log("Avatar cargado desde:", url);
+        return url;
+        } catch (e) { /* probar siguiente */ }
+    }
+    return null;
+    }
+
+    async function resolverRutaMedia(path) {
+        if (!path) return null;
+
+        const candidatos = [
+            path,
+            "../" + path,
+            "../../" + path,
+            "/" + path.replace(/^\/+/, ''),
+            window.location.origin + "/" + path.replace(/^\/+/, '')
+        ];
+
+        for (const url of candidatos) {
+            try {
+                await probarImagen(url);
+                return url;
+            } catch (_) {}
+        }
+
+        return null;
+    }
+
+
+    async function cargarDatosPerfil() {
+    try {
+        const r = await fetch('obtenerPerfil.php', { method: 'POST' });
+        const data = await r.json();
+        console.log("Datos recibidos:", data);
+        if (!data.success) { window.location.href = 'index.html'; return; }
+
+        document.getElementById('perfil-nombre').textContent = data.data.nombre_completo;
+        document.getElementById('perfil-correo').textContent = data.data.correo;
+        document.getElementById('perfil-nacionalidad').textContent = data.data.nacionalidad || 'N/A';
+        const navLink = document.querySelector('#perfil-link a');
+        if (navLink) navLink.textContent = data.data.nombre_completo.split(' ')[0];
+
+        const rawAvatar = data.data.AVATAR_URL || data.data.avatar_url || null;
+        const imgElem = document.getElementById("avatarPerfil");
+        const urlValida = await resolverAvatar(rawAvatar);
+        if (urlValida) {
+        imgElem.src = urlValida;
+        } else {
+        console.warn("No se pudo cargar el avatar desde ninguna ruta. Valor recibido:", rawAvatar);
+        imgElem.src = "imagenes/default-profile.jpg";
+        }
+    } catch (err) {
+        console.error("Error perfil:", err);
+    }
     }
 
     function cargarContenidoUsuario() {
@@ -233,7 +292,6 @@
         fetch('obtener_perfil_contenido.php')
         .then(response => response.json())
         .then(data => {
-            console.log("Datos recibidos:", data); // <--- MIRA ESTO EN LA CONSOLA (F12)
 
             // 1. Renderizar POSTS
             divPosts.innerHTML = ''; // Limpiar
@@ -261,6 +319,60 @@
         });
     }
 
+    function crearTarjeta(item, tipo) {
+    const card = document.createElement('div');
+    card.className = 'card-mini';
+
+    const titulo = item.titulo || item.TITULO || "Sin título";
+    const fechaRaw = item.fecha_elaboracion || item.FECHA_ELABORACION;
+    const precio = item.precio || item.PRECIO || 0;
+    const tipoContenido = item.tipo || item.TIPO;
+    const idPost = item.id_publicacion || item.ID_PUBLICACION;
+    const idProd = item.ID_PRODUCTO || item.id_producto;
+
+    const urlMedia = item.url_contenido || item.URL_CONTENIDO;
+
+    // Creamos el contenedor
+    card.innerHTML = `
+        <a style="text-decoration:none; color:inherit;">
+            <div class="card-media"></div>
+            <div class="card-body">
+                <h3 class="card-title">${titulo}</h3>
+                ${tipo === 'producto' ? `<p class="card-price">$${parseFloat(precio).toFixed(2)}</p>` : ''}
+                <p class="card-text" style="font-size:0.8rem; color:#888;">
+                ${new Date(fechaRaw).toLocaleDateString()}
+                </p>
+            </div>
+        </a>
+    `;
+
+    // 1. Resolver link de detalle
+    const link = card.querySelector("a");
+    link.href = (tipo === 'post')
+        ? `Post.html?id=${idPost}`
+        : `PostProducto.html?id=${idProd}`;
+
+    // 2. Resolver la ruta real de la imagen/video
+    const mediaDiv = card.querySelector(".card-media");
+
+    resolverRutaMedia(urlMedia).then(urlValida => {
+        if (!urlValida) {
+            mediaDiv.innerHTML = `<img src="imagenes/blank.jpg">`;
+            return;
+        }
+
+        if (tipoContenido === "video") {
+            mediaDiv.innerHTML = `<video src="${urlValida}" muted></video>`;
+        } else {
+            mediaDiv.innerHTML = `<img src="${urlValida}" onerror="this.src='imagenes/blank.jpg'">`;
+        }
+    });
+
+    return card;
+}
+
+
+    /*
     function crearTarjeta(item, tipo) {
         const card = document.createElement('div');
         card.className = 'card-mini';
@@ -317,7 +429,7 @@
             </a>
         `;
         return card;
-    }
+    }*/
 
     function cargarEstadisticasVentas() {
     fetch('obtener_ventas.php')

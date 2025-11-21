@@ -28,18 +28,31 @@ try {
 
     $target_dir = "uploads/";
     if (!empty($_FILES['video']['name'])) {
-        $tipo_contenido = 'video';
-        $nombre = is_array($_FILES['video']['name']) ? $_FILES['video']['name'][0] : $_FILES['video']['name'];
-        $url_contenido = $target_dir . basename($nombre);
-        // Aquí deberías mover el archivo: move_uploaded_file(...)
-        $hay_archivo_nuevo = true;
+    $tipo_contenido = 'video';
+
+    $nombre = is_array($_FILES['video']['name']) ? $_FILES['video']['name'][0] : $_FILES['video']['name'];
+    $url_contenido = $target_dir . basename($nombre);
+
+    // === Mover archivo al servidor ===
+    if (!move_uploaded_file($_FILES['video']['tmp_name'], $url_contenido)) {
+        throw new Exception("Error al guardar el video en el servidor");
+    }
+    $hay_archivo_nuevo = true;
+    
     } elseif (!empty($_FILES['imagen']['name'])) {
         $tipo_contenido = 'imagen';
+
         $nombre = is_array($_FILES['imagen']['name']) ? $_FILES['imagen']['name'][0] : $_FILES['imagen']['name'];
         $url_contenido = $target_dir . basename($nombre);
-        // Aquí deberías mover el archivo: move_uploaded_file(...)
+
+        // === Mover archivo al servidor ===
+        if (!move_uploaded_file($_FILES['imagen']['tmp_name'], $url_contenido)) {
+            throw new Exception("Error al guardar la imagen en el servidor");
+        }
+
         $hay_archivo_nuevo = true;
     }
+
 
     // --- LÓGICA SQL DINÁMICA ---
     $sql = "";

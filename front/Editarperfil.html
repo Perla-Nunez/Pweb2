@@ -57,7 +57,7 @@
         <div class="profile-container">
             <h2 class="header-fonts">Editar Perfil</h2>
             
-            <form id="form-editar" onsubmit="guardarCambios(event)">
+            <form id="form-editar" onsubmit="guardarCambios(event)" enctype="multipart/form-data">
                 <div class="profile-info">
                     
                     <div class="profile-image">
@@ -66,7 +66,7 @@
                             <button type="button" class="btn-cambiar-img" onclick="document.getElementById('profile-pic-input').click();">Cambiar Imagen</button>
                             <input type="file" id="profile-pic-input" accept="image/*" onchange="previewImage(event)" style="display: none;">
                         </div>
-                        <p style="font-size:0.8rem; color:gray;">(La imagen es local, no se guarda en BD aún)</p>
+                        <!--<p style="font-size:0.8rem; color:gray;">(La imagen es local, no se guarda en BD aún)</p>-->
                     </div>
 
                     <div class="profile-details">
@@ -126,7 +126,6 @@
     });
 
     function cargarDatosParaEditar() {
-        // Reutilizamos el archivo que ya tenías: obtenerPerfil.php
         fetch('obtenerPerfil.php', { method: 'POST' })
         .then(r => r.json())
         .then(data => {
@@ -153,6 +152,9 @@
                 // pero obtenerPerfil.php probablemente no la devuelve por seguridad.
                 document.getElementById('contra').placeholder = "Ingresa tu contraseña actual o nueva";
 
+                document.getElementById("profile-preview").src = usuario.AVATAR_URL
+                ? usuario.AVATAR_URL
+                : "imagenes/default-profile.jpg";
             } else {
                 alert("Debes iniciar sesión.");
                 window.location.href = 'index.html';
@@ -161,34 +163,35 @@
         .catch(e => console.error("Error cargando datos:", e));
     }
 
-    // 2. Función para enviar los datos actualizados
     function guardarCambios(event) {
-        event.preventDefault(); // Evitar recarga del form
+        event.preventDefault();
 
-        const formData = {
-            nombre: document.getElementById('nombre').value,
-            apellido: document.getElementById('apellido').value,
-            email: document.getElementById('email').value,
-            contra: document.getElementById('contra').value,
-            ubicacion: document.getElementById('ubicacion').value
-        };
+        let formData = new FormData();
+        formData.append("nombre", document.getElementById("nombre").value);
+        formData.append("apellido", document.getElementById("apellido").value);
+        formData.append("email", document.getElementById("email").value);
+        formData.append("contra", document.getElementById("contra").value);
+        formData.append("ubicacion", document.getElementById("ubicacion").value);
 
-        fetch('guardarPerfil.php', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(formData)
+        // Imagen (si el usuario eligió una)
+        let archivo = document.getElementById("profile-pic-input").files[0];
+        if (archivo) {
+            formData.append("avatar", archivo);
+        }
+
+        fetch("guardarPerfil.php", {
+            method: "POST",
+            body: formData   // NO se usa headers aquí
         })
-        .then(response => response.json())
+        .then(r => r.json())
         .then(data => {
             alert(data.message);
             if (data.success) {
-                window.location.href = 'perfil.html'; // Regresar al perfil al guardar
+                location.href = "perfil.html"; // Regresar al perfil al guardar
             }
         })
-        .catch(error => {
-            console.error('Error:', error);
-            alert('Error de conexión al intentar guardar.');
-        });
+        .catch(err => console.log("Error:", err));
+        //alert('Error de conexión al intentar guardar.');
     }
 
     // Vista previa de imagen (Solo frontend)

@@ -1,59 +1,109 @@
 <?php
+header("Content-Type: application/json; charset=utf-8");
 include("config.php");
 session_start();
 
-header('Content-Type: application/json; charset=utf-8');
-$response = ["success" => false, "message" => "Error desconocido"];
-
-// 1. Verificar sesión
-if (!isset($_SESSION['id_usuario'])) {
-    $response['message'] = 'Sesión no iniciada.';
-    echo json_encode($response);
+// --------------------------------------------
+// 2. VERIFICAR QUE EL USUARIO ESTÁ LOGEADO
+// --------------------------------------------
+if (!isset($_SESSION["id_usuario"])) {
+    echo json_encode(["success" => false, "message" => "Usuario no autenticado"]);
     exit;
 }
 
-$id_usuario = $_SESSION['id_usuario'];
+$id_usuario = $_SESSION["id_usuario"];
 
-// 2. Recibir datos del formulario (JSON o POST normal)
-$input = json_decode(file_get_contents('php://input'), true);
+// --------------------------------------------
+// 3. RECIBIR DATOS DEL FORMULARIO
+// --------------------------------------------
+$nombre      = $_POST["nombre"]      ?? null;
+$apellido    = $_POST["apellido"]    ?? null;
+$email       = $_POST["email"]       ?? null;
+$contra      = $_POST["contra"]      ?? null;
+$ubicacion   = $_POST["ubicacion"]   ?? null;
 
-$nombre = $input['nombre'] ?? $_POST['nombre'] ?? '';
-$apellido = $input['apellido'] ?? $_POST['apellido'] ?? '';
-$correo = $input['email'] ?? $_POST['email'] ?? '';
-$password = $input['contra'] ?? $_POST['contra'] ?? '';
-$nacionalidad = $input['ubicacion'] ?? $_POST['ubicacion'] ?? '';
+// Combinar nombre + apellido
+$nombre_completo = trim($nombre . " " . $apellido);
 
-// Validaciones básicas
-if (empty($nombre) || empty($correo) || empty($password)) {
-    $response['message'] = 'Nombre, correo y contraseña son obligatorios.';
-    echo json_encode($response);
-    exit;
+// --------------------------------------------
+// 4. PROCESAR AVATAR SI SE ENVIÓ
+// --------------------------------------------
+$avatar_url = null;
+
+if (!empty($_FILES["avatar"]["name"])) {
+
+    $nombreArchivo = $_FILES["avatar"]["name"];
+    $tmp           = $_FILES["avatar"]["tmp_name"];
+
+    $carpeta = "avatars/";
+
+    // Crear carpeta si no existe
+    if (!is_dir($carpeta)) {
+        mkdir($carpeta, 0777, true);
+    }
+
+    // Crear nombre único para la imagen
+    $nuevoNombre = $id_usuario . "_" . time() . "_" . $nombreArchivo;
+
+    $rutaDestino = $carpeta . $nuevoNombre;
+
+    // Mover archivo
+    if (move_uploaded_file($tmp, $rutaDestino)) {
+        $avatar_url = $rutaDestino;
+    }
 }
 
-// Unir nombre y apellido para el campo 'nombre_completo' de la BD
-$nombre_completo = trim("$nombre $apellido");
+// --------------------------------------------
+// 5. PREPARAR SENTENCIA SEGÚN SI HUBO O NO AVATAR NUEVO
+// --------------------------------------------
+if ($avatar_url !== null) {
+    // Con avatar
+    $sql = "UPDATE usuario SET 
+                nombre_completo = ?, 
+                correo = ?, 
+                password = ?, 
+                nacionalidad = ?, 
+                AVATAR_URL = ?
+            WHERE id_usuario = ?";
 
-// 3. Actualizar en Base de Datos
-$sql = "UPDATE usuario SET nombre_completo = ?, correo = ?, password = ?, nacionalidad = ? WHERE id_usuario = ?";
-
-$stmt = $conn->prepare($sql);
-if (!$stmt) {
-    $response['message'] = 'Error SQL: ' . $conn->error;
-    echo json_encode($response);
-    exit;
-}
-
-$stmt->bind_param("ssssi", $nombre_completo, $correo, $password, $nacionalidad, $id_usuario);
-
-if ($stmt->execute()) {
-    $response['success'] = true;
-    $response['message'] = 'Perfil actualizado correctamente.';
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param(
+        "sssssi",
+        $nombre_completo,
+        $email,
+        $contra,
+        $ubicacion,
+        $avatar_url,
+        $id_usuario
+    );
 } else {
-    $response['message'] = 'Error al actualizar: ' . $stmt->error;
+    // Sin avatar nuevo (no tocar url_contenido)
+    $sql = "UPDATE usuario SET 
+                nombre_completo = ?, 
+                correo = ?, 
+                password = ?, 
+                nacionalidad = ?
+            WHERE id_usuario = ?";
+
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param(
+        "ssssi",
+        $nombre_completo,
+        $email,
+        $contra,
+        $ubicacion,
+        $id_usuario
+    );
+}
+
+// --------------------------------------------
+// 6. EJECUTAR Y RESPONDER
+// --------------------------------------------
+if ($stmt->execute()) {
+    echo json_encode(["success" => true, "message" => "Perfil actualizado correctamente"]);
+} else {
+    echo json_encode(["success" => false, "message" => "Error al actualizar: " . $conn->error]);
 }
 
 $stmt->close();
 $conn->close();
-
-echo json_encode($response);
-?>
